@@ -58,7 +58,7 @@ public class BookController {
             System.out.println("Please enter the name of the book: ");
             String name = scanner.nextLine().trim();
 
-            if (name.contains(",")) {
+            if (name.isEmpty()) {
                 System.out.println("Invalid name of the book, please try again");
                 continue;
             }
@@ -66,7 +66,7 @@ public class BookController {
             System.out.println("Please enter the author of the book: ");
             String author = scanner.nextLine().trim();
 
-            if (author.contains(",")) {
+            if (author.isEmpty()) {
                 System.out.println("Invalid author of the book, please try again");
                 continue;
             }
@@ -74,7 +74,7 @@ public class BookController {
             System.out.println("Please enter the description the book: ");
             String description = scanner.nextLine().trim();
 
-            if (description.contains(",")) {
+            if (description.isEmpty()) {
                 System.out.println("Invalid description of the book, please try again");
                 continue;
             }

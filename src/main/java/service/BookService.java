@@ -1,13 +1,14 @@
 package service;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import exception.BookDoesNotExistException;
 import model.Book;
 import org.springframework.stereotype.Service;
 
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +21,19 @@ public class BookService {
     }
 
     private void loadFromFile() {
-        try (var lines = Files.lines(Path.of("csv/books.csv"))){
-            lines.forEach(line -> {
-                String[] split = line.split(",");
-                int id = Integer.parseInt(split[0].trim());
-                String title = split[1].trim();
-                String author = split[2].trim();
-                String description = split[3].trim();
+        File csvFile = new File("csv/books.csv");
 
-                books.add(new Book(id, title, author, description));
-            });
+        CsvMapper mapper = new CsvMapper();
+        CsvSchema schema = mapper
+                .schemaFor(Book.class)
+                .withHeader()
+                .withColumnSeparator(',');
+
+        try (MappingIterator<Book> iterator = mapper.readerFor(Book.class).with(schema).readValues(csvFile)){
+            while(iterator.hasNext()){
+                Book book = iterator.next();
+                books.add(book);
+            }
         } catch(Exception e){
             throw new RuntimeException(e);
         }
@@ -47,7 +51,7 @@ public class BookService {
     }
 
     public void createBook(String title, String author, String description) {
-        int id = books.getLast().getId() + 1;
+        int id = books.isEmpty() ? 1 : books.getLast().getId() + 1;
 
         books.add(new Book(id, title, author, description));
     }
@@ -80,10 +84,20 @@ public class BookService {
     }
 
     public void writeChangesToFile() {
-        try (var writer = new FileWriter("csv/books.csv")) {
-            for (Book book : books) {
-                writer.write(book.getId() + "," + book.getTitle() + "," + book.getAuthor() + "," + book.getDescription() + "\n");
-            }
+        File csvFile = new File("csv/books.csv");
+        CsvMapper mapper = new CsvMapper();
+
+        CsvSchema schema = mapper
+                .schemaFor(Book.class)
+                .withHeader()
+                .withColumnSeparator(',');
+
+        try {
+            mapper.writerFor(
+                    mapper.getTypeFactory().constructParametricType(java.util.List.class, Book.class)
+                    )
+                    .with(schema)
+                    .writeValue(csvFile, books);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
