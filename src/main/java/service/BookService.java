@@ -1,30 +1,26 @@
 package service;
 
+import exception.BookDoesNotExistException;
 import model.Book;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BookService {
-    private final TreeSet<Book> books = new TreeSet<>();
+    private final List<Book> books = new ArrayList<>();
 
     public BookService() {
         loadFromFile();
     }
 
     private void loadFromFile() {
-
-        try (var lines = Files.lines(Path.of("csv/books.csv"))
-        ){
+        try (var lines = Files.lines(Path.of("csv/books.csv"))){
             lines.forEach(line -> {
                 String[] split = line.split(",");
                 int id = Integer.parseInt(split[0].trim());
@@ -39,22 +35,48 @@ public class BookService {
         }
     }
 
-    public Set<Book> readAllBooks() {
+    public Book getBookById(int id) throws BookDoesNotExistException {
+        return books.stream()
+                .filter(book -> book.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new BookDoesNotExistException("Book with id " + id + " does not exist"));
+    }
+
+    public List<Book> readAllBooks() {
         return books;
     }
 
     public void createBook(String title, String author, String description) {
-        int id = books.last().getId() + 1;
+        int id = books.getLast().getId() + 1;
 
         books.add(new Book(id, title, author, description));
     }
 
-    public void updateBook(int id, String title, String author, String description) {
-
+    public void updateBookTitle(int id, String newTitle) throws BookDoesNotExistException {
+        Book book = getBookById(id);
+        book.setTitle(newTitle);
     }
 
-    public void deleteBook(int id) {
+    public void updateBookAuthor(int id, String newAuthor) throws BookDoesNotExistException {
+        Book book = getBookById(id);
+        book.setAuthor(newAuthor);
+    }
 
+    public void updateBookDescription(int id, String newDescription) throws BookDoesNotExistException {
+        Book book = getBookById(id);
+        book.setDescription(newDescription);
+    }
+
+    public void updateBook(int id, String newTitle, String newAuthor, String newDescription) throws BookDoesNotExistException {
+        Book book = getBookById(id);
+        book.setTitle(newTitle);
+        book.setAuthor(newAuthor);
+        book.setDescription(newDescription);
+    }
+
+    public void deleteBook(int id) throws BookDoesNotExistException {
+        Book book = getBookById(id);
+        books.remove(book);
     }
 
     public void writeChangesToFile() {
