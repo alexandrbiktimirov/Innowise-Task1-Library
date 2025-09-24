@@ -1,7 +1,6 @@
 package controller;
 
 import exception.BookDoesNotExistException;
-import model.Book;
 import org.springframework.stereotype.Controller;
 import service.BookService;
 
