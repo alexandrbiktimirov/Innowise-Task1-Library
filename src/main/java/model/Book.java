@@ -1,12 +1,17 @@
 package model;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@Component
-public class Book implements Comparable<Book> {
-    private int id;
+@JsonPropertyOrder({"id", "title", "author", "description"})
+public class Book {
+    @JsonProperty("id")
+    private Integer id;
+    @JsonProperty("title")
     private String title;
+    @JsonProperty("author")
     private String author;
+    @JsonProperty("description")
     private String description;
 
     public Book(int id, String title, String author, String description) {
@@ -50,11 +55,6 @@ public class Book implements Comparable<Book> {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public int compareTo(Book b) {
-        return Integer.compare(this.id, b.id);
     }
 
     @Override
