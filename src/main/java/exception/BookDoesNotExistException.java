@@ -1,7 +1,6 @@
 package exception;
 
 public class BookDoesNotExistException extends Exception{
-    public BookDoesNotExistException(String message) {
-        super(message);
+    public BookDoesNotExistException() {
     }
 }

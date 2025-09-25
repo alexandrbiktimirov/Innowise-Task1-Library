@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 public class BookService {
     private final List<Book> books = new ArrayList<>();
+    private final List<Book> initialBooks = new ArrayList<>();
 
     public BookService() {
         loadFromFile();
@@ -33,6 +34,7 @@ public class BookService {
             while(iterator.hasNext()){
                 Book book = iterator.next();
                 books.add(book);
+                initialBooks.add(book);
             }
         } catch(Exception e){
             throw new RuntimeException(e);
@@ -43,7 +45,7 @@ public class BookService {
         return books.stream()
                 .filter(book -> book.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new BookDoesNotExistException("Book with id " + id + " does not exist"));
+                .orElseThrow(BookDoesNotExistException::new);
     }
 
     public List<Book> readAllBooks() {
@@ -84,6 +86,10 @@ public class BookService {
     }
 
     public void writeChangesToFile() {
+        if (books.equals(initialBooks)) {
+            return;
+        }
+
         File csvFile = new File("csv/books.csv");
         CsvMapper mapper = new CsvMapper();
 
