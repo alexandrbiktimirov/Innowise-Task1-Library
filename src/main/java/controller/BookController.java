@@ -89,7 +89,7 @@ public class BookController {
             System.out.println(messages.getString("books.empty"));
         }
 
-        bookService.readAllBooks().forEach(System.out::println);
+        books.forEach(System.out::println);
     }
 
     public void createNewBook() {
@@ -127,6 +127,11 @@ public class BookController {
 
     public void updateBook() {
         displayAllBooks();
+
+        if (!hasBooks()){
+            return;
+        }
+
         System.out.println(messages.getString("update.id"));
 
         String inputId = scanner.nextLine().trim();
@@ -209,6 +214,11 @@ public class BookController {
 
     public void deleteBook() {
         displayAllBooks();
+
+        if (!hasBooks()){
+            return;
+        }
+
         System.out.println(messages.getString("delete.id"));
 
         String inputId = scanner.nextLine().trim();
@@ -226,5 +236,9 @@ public class BookController {
         } catch (BookDoesNotExistException e) {
             System.out.println(messages.getString("book.exception.first") + id + messages.getString("book.exception.second"));
         }
+    }
+
+    public boolean hasBooks(){
+        return !bookService.readAllBooks().isEmpty();
     }
 }
