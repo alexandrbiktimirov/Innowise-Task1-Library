@@ -1,5 +1,6 @@
 package service;
 
+import aop.Cached;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
@@ -42,6 +43,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Cached
     public Book getBookById(int id) throws BookDoesNotExistException {
         return books.stream()
                 .filter(book -> book.getId() == id)

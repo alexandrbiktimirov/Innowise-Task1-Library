@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CachingAspect {
     private final Map<CacheKey, Object> cache = new ConcurrentHashMap<>();
 
-    @Around("execution(* service.BookServiceImpl.getBookById(..))")
+    @Around("@annotation(aop.Cached)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
 
