@@ -1,14 +1,21 @@
 package config;
 
+import aop.CachingAspect;
 import aop.LoggingAspect;
 import controller.BookController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import service.BookService;
+import service.BookServiceImpl;
 
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
 public class Config {
+
+    @Bean
+    public CachingAspect cachingAspect() {
+        return new CachingAspect();
+    }
 
     @Bean
     public LoggingAspect loggingAspect() {
@@ -16,8 +23,8 @@ public class Config {
     }
 
     @Bean
-    public BookService bookService(){
-        return new BookService();
+    public BookServiceImpl bookService(){
+        return new BookServiceImpl();
     }
 
     @Bean

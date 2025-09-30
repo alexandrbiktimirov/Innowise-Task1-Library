@@ -49,8 +49,6 @@ public class BookController {
                 System.out.println(messages.getString("start.invalid.option"));
             }
         }
-
-        bookService.writeChangesToFile();
     }
 
     public void chooseLanguage() {
