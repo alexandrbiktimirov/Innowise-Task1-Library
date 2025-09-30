@@ -9,16 +9,20 @@ repositories {
     mavenCentral()
 }
 
+val spring = "6.2.7"
+val junitBom = "5.10.2"
+
 dependencies {
-    implementation("org.springframework:spring-aop:5.3.39")
+    implementation("org.springframework:spring-context:$spring")
+    implementation("org.springframework:spring-aop:$spring")
     implementation("org.aspectj:aspectjweaver:1.9.22.1")
     implementation("org.slf4j:slf4j-api:2.0.16")
-    implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
     runtimeOnly("ch.qos.logback:logback-classic:1.5.13")
-    implementation("org.springframework:spring-context:7.0.0-M1")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.20.0")
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.2")
+    implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
+    testImplementation(platform("org.junit:junit-bom:$junitBom"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {
