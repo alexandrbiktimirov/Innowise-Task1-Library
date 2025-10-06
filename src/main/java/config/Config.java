@@ -1,30 +1,20 @@
 package config;
 
-import aop.CachingAspect;
-import aop.LoggingAspect;
 import controller.BookController;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import repository.BookRepository;
 import service.BookService;
 import service.BookServiceImpl;
 
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
+@Configuration
+@Import({JdbcConfig.class, AopConfig.class})
 public class Config {
 
     @Bean
-    public CachingAspect cachingAspect() {
-        return new CachingAspect();
-    }
-
-    @Bean
-    public LoggingAspect loggingAspect() {
-        return new LoggingAspect();
-    }
-
-    @Bean
-    public BookServiceImpl bookService(){
-        return new BookServiceImpl();
+    public BookServiceImpl bookService(BookRepository bookRepository) {
+        return new BookServiceImpl(bookRepository);
     }
 
     @Bean
