@@ -12,6 +12,11 @@ CREATE TABLE genre (
 CREATE TABLE book (
     id SERIAL PRIMARY KEY,
     title TEXT,
+    description TEXT,
     author_id INT NOT NULL REFERENCES author(id),
     genre_id INT NOT NULL REFERENCES genre(id)
 );
+
+DROP TABLE IF EXISTS book;
+DROP TABLE IF EXISTS genre;
+DROP TABLE IF EXISTS author;
