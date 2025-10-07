@@ -1,35 +1,31 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.springframework.data.annotation.Id;
 
-@JsonPropertyOrder({"id", "title", "author", "description"})
 public class Book {
-    @JsonProperty("id")
-    private Integer id;
-    @JsonProperty("title")
+    @Id
+    private Long id;
     private String title;
-    @JsonProperty("author")
-    private String author;
-    @JsonProperty("description")
+    private long authorId;
     private String description;
+    private long genreId;
 
-    public Book(int id, String title, String author, String description) {
-        this.id = id;
+    public Book(String title, long author, String description, long genre) {
         this.title = title;
-        this.author = author;
+        this.authorId = author;
         this.description = description;
+        this.genreId = genre;
     }
 
     public Book() {
 
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -41,12 +37,12 @@ public class Book {
         this.title = title;
     }
 
-    public String getAuthor() {
-        return author;
+    public long getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthorId(long authorId) {
+        this.authorId = authorId;
     }
 
     public String getDescription() {
@@ -57,8 +53,16 @@ public class Book {
         this.description = description;
     }
 
+    public long getGenreId() {
+        return genreId;
+    }
+
+    public void setGenreId(long genreId) {
+        this.genreId = genreId;
+    }
+
     @Override
     public String toString() {
-        return "Id: " + id + ", Title: " + title + ", Author: " + author + ", Description: " + description;
+        return "Id: " + id + ", Title: " + title + ", Author id: " + authorId + ", Description: " + description + ". Genre id: " + genreId;
     }
 }
