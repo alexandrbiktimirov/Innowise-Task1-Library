@@ -1,6 +1,5 @@
 package config;
 
-import controller.AppController;
 import controller.AuthorController;
 import controller.BookController;
 import controller.GenreController;
@@ -29,11 +28,6 @@ public class Config {
     @Bean
     public BookServiceImpl bookService(BookDao bookDao) {
         return new BookServiceImpl(bookDao);
-    }
-
-    @Bean
-    public AppController appController() {
-        return new AppController();
     }
 
     @Bean
