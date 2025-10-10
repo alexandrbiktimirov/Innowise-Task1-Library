@@ -24,7 +24,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Cached
-    public Author getAuthorById(int id) {
+    public Author getAuthorById(long id) {
         try {
             return authorDao.findById(id);
         } catch (EmptyResultDataAccessException e){
@@ -41,8 +41,10 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public void updateAuthor(String firstName, String lastName) {
-        Author author = new Author(firstName, lastName);
+    public void updateAuthor(long id, String firstName, String lastName) {
+        Author author = getAuthorById(id);
+        author.setFirstName(firstName);
+        author.setLastName(lastName);
 
         authorDao.update(author);
     }

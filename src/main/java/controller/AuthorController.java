@@ -91,12 +91,13 @@ public class AuthorController {
         while (running) {
             System.out.println(messages.getString("author.update.select"));
 
-            String choice = scanner.nextLine().trim();
+            String authorId = scanner.nextLine().trim();
 
+            long authorIdLong = 0;
             try {
-                int choiceInt = Integer.parseInt(choice);
+                authorIdLong = Long.parseLong(authorId);
 
-                if (authorService.getAuthorById(choiceInt) == null) {
+                if (authorService.getAuthorById(authorIdLong) == null) {
                     throw new IllegalArgumentException();
                 }
             } catch (Exception e) {
@@ -121,7 +122,7 @@ public class AuthorController {
                 continue;
             }
 
-            authorService.updateAuthor(firstName, lastName);
+            authorService.updateAuthor(authorIdLong, firstName, lastName);
             running = false;
         }
     }

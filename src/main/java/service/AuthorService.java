@@ -9,13 +9,13 @@ public interface AuthorService {
 
     List<Author> getAllAuthors();
 
-    Author getAuthorById(int id);
+    Author getAuthorById(long id);
 
     @Transactional
     void createAuthor(String firstName, String lastName);
 
     @Transactional
-    void updateAuthor(String firstName, String lastName);
+    void updateAuthor(long id, String firstName, String lastName);
 
     @Transactional
     void deleteAuthor(int id);

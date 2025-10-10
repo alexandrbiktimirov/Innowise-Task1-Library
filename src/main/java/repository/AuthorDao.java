@@ -16,7 +16,7 @@ public class AuthorDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Author findById(Integer id) {
+    public Author findById(Long id) {
         String sql = "SELECT * FROM author WHERE id = ?";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
