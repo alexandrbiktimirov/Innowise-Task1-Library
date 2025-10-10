@@ -1,9 +1,6 @@
 package model;
 
-import org.springframework.data.annotation.Id;
-
 public class Book {
-    @Id
     private Long id;
     private String title;
     private long authorId;

@@ -1,9 +1,6 @@
 package model;
 
-import org.springframework.data.annotation.Id;
-
 public class Author {
-    @Id
     private Long id;
     private String firstName;
     private String lastName;
@@ -42,10 +39,6 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Author{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
+        return "Id: " + id + ", First Name: " + firstName + ", Last Name: " + lastName;
     }
 }

@@ -1,9 +1,7 @@
 package model;
 
-import org.springframework.data.annotation.Id;
 
 public class Genre {
-    @Id
     private Long id;
     private String name;
 
