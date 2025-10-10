@@ -6,6 +6,7 @@ import controller.GenreController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import repository.AuthorDao;
 import repository.BookDao;
 import repository.GenreDao;
@@ -14,6 +15,21 @@ import service.*;
 @Configuration
 @Import({JdbcConfig.class, AopConfig.class})
 public class Config {
+
+    @Bean
+    public AuthorDao authorDao(JdbcTemplate jdbcTemplate) {
+        return new AuthorDao(jdbcTemplate);
+    }
+
+    @Bean
+    public BookDao bookDao(JdbcTemplate jdbcTemplate) {
+        return new BookDao(jdbcTemplate);
+    }
+
+    @Bean
+    public GenreDao genreDao(JdbcTemplate jdbcTemplate) {
+        return new GenreDao(jdbcTemplate);
+    }
 
     @Bean
     public AuthorService authorService(AuthorDao authorDao) {
