@@ -1,3 +1,5 @@
+package main;
+
 import config.Config;
 import controller.AuthorController;
 import controller.BookController;
@@ -60,7 +62,7 @@ public class Main {
 
                     switch (option) {
                         case 1 -> context.getBean(BookController.class);
-                        case 2 -> context.getBean(AuthorController.class);
+                        case 2 -> context.getBean(AuthorController.class).showMenu();
                         case 3 -> context.getBean(GenreController.class);
                         case 4 -> quit = true;
                         default -> System.out.println(messages.getString("start.invalid.option"));
@@ -70,5 +72,9 @@ public class Main {
                 }
             }
         }
+    }
+
+    public static ResourceBundle getMessages() {
+        return messages;
     }
 }

@@ -12,10 +12,10 @@ public interface AuthorService {
     Author getAuthorById(int id);
 
     @Transactional
-    void createAuthor(Author author);
+    void createAuthor(String firstName, String lastName);
 
     @Transactional
-    void updateAuthor(Author author);
+    void updateAuthor(String firstName, String lastName);
 
     @Transactional
     void deleteAuthor(int id);

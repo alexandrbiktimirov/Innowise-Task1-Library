@@ -34,13 +34,16 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public void createAuthor(Author author) {
+    public void createAuthor(String firstName, String lastName) {
+        Author author = new Author(firstName, lastName);
         authorDao.create(author);
     }
 
     @Transactional
     @Override
-    public void updateAuthor(Author author) {
+    public void updateAuthor(String firstName, String lastName) {
+        Author author = new Author(firstName, lastName);
+
         authorDao.update(author);
     }
 
