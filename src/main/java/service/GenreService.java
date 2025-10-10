@@ -11,10 +11,10 @@ public interface GenreService {
     Genre getGenreById(Long id);
 
     @Transactional
-    void createGenre(Genre genre);
+    void createGenre(String name);
 
     @Transactional
-    void updateGenre(Genre genre);
+    void updateGenre(long id, String name);
 
     @Transactional
     void deleteGenre(Long id);

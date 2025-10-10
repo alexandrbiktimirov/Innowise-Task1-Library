@@ -11,10 +11,10 @@ public interface BookService {
     Book getBookById(Long id);
 
     @Transactional
-    void createBook(Book book);
+    void createBook(String title, long authorId, String description, long genreId);
 
     @Transactional
-    void updateBook(Book book);
+    void updateBook(long id, String title, long authorId, String description, long genreId);
 
     @Transactional
     void deleteBook(Long id);

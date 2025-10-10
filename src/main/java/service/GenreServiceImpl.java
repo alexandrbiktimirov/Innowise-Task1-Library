@@ -35,13 +35,18 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional
     @Override
-    public void createGenre(Genre genre) {
+    public void createGenre(String name) {
+        Genre genre = new Genre(name);
+
         genreDao.create(genre);
     }
 
     @Transactional
     @Override
-    public void updateGenre(Genre genre) {
+    public void updateGenre(long id, String name) {
+        Genre genre = getGenreById(id);
+        genre.setName(name);
+
         genreDao.update(genre);
     }
 

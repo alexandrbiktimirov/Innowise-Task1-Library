@@ -61,9 +61,9 @@ public class Main {
                     int option = Integer.parseInt(input);
 
                     switch (option) {
-                        case 1 -> context.getBean(BookController.class);
+                        case 1 -> context.getBean(BookController.class).showMenu();
                         case 2 -> context.getBean(AuthorController.class).showMenu();
-                        case 3 -> context.getBean(GenreController.class);
+                        case 3 -> context.getBean(GenreController.class).showMenu();
                         case 4 -> quit = true;
                         default -> System.out.println(messages.getString("start.invalid.option"));
                     }

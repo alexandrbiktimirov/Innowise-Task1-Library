@@ -35,13 +35,21 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void createBook(Book book) {
+    public void createBook(String title, long authorId, String description, long genreId) {
+        Book book = new Book(title, authorId, description, genreId);
+
         bookDao.create(book);
     }
 
     @Transactional
     @Override
-    public void updateBook(Book book) {
+    public void updateBook(long id, String title, long authorId, String description, long genreId) {
+        Book book = getBookById(id);
+        book.setTitle(title);
+        book.setAuthorId(authorId);
+        book.setDescription(description);
+        book.setGenreId(genreId);
+
         bookDao.update(book);
     }
 
