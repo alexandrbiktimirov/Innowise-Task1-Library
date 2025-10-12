@@ -14,9 +14,10 @@ val junitBom = "5.10.2"
 
 dependencies {
     implementation("org.springframework:spring-context:$spring")
+    implementation("org.springframework:spring-orm:$spring")
     implementation("org.springframework:spring-aop:$spring")
     implementation("org.postgresql:postgresql:42.7.7")
-    implementation("org.springframework:spring-jdbc:${spring}")
+    implementation("org.hibernate:hibernate-core:7.1.3.Final")
     implementation("org.springframework:spring-tx:${spring}")
     implementation("org.aspectj:aspectjweaver:1.9.22.1")
     implementation("org.slf4j:slf4j-api:2.0.16")

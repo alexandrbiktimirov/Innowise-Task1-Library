@@ -13,7 +13,7 @@ import repository.GenreDao;
 import service.*;
 
 @Configuration
-@Import({JdbcConfig.class, AopConfig.class})
+@Import({HibernateConfig.class, AopConfig.class})
 public class Config {
 
     @Bean
