@@ -1,8 +1,10 @@
 package config;
 
-import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -13,7 +15,19 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
+@PropertySource("classpath:database.properties")
 public class HibernateConfig {
+
+    private final Environment env;
+
+    public HibernateConfig(Environment env) {
+        this.env = env;
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
@@ -30,10 +44,10 @@ public class HibernateConfig {
     public DataSource dataSource() {
         var dataSource = new DriverManagerDataSource();
 
-        dataSource.setDriverClassName("com.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
-        dataSource.setUsername("appuser");
-        dataSource.setPassword("apppass");
+        dataSource.setDriverClassName(env.getProperty("database.driver"));
+        dataSource.setUrl(env.getProperty("database.url"));
+        dataSource.setUsername(env.getProperty("database.username"));
+        dataSource.setPassword(env.getProperty("database.password"));
 
         return dataSource;
     }

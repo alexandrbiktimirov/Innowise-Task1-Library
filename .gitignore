@@ -1,3 +1,6 @@
+# Configuration
+/src/main/resources/database.properties
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

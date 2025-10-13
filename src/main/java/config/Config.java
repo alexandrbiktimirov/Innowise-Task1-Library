@@ -3,10 +3,10 @@ package config;
 import controller.AuthorController;
 import controller.BookController;
 import controller.GenreController;
+import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.core.JdbcTemplate;
 import repository.AuthorDao;
 import repository.BookDao;
 import repository.GenreDao;
@@ -17,18 +17,18 @@ import service.*;
 public class Config {
 
     @Bean
-    public AuthorDao authorDao(JdbcTemplate jdbcTemplate) {
-        return new AuthorDao(jdbcTemplate);
+    public AuthorDao authorDao(SessionFactory sessionFactory) {
+        return new AuthorDao(sessionFactory);
     }
 
     @Bean
-    public BookDao bookDao(JdbcTemplate jdbcTemplate) {
-        return new BookDao(jdbcTemplate);
+    public BookDao bookDao(SessionFactory sessionFactory) {
+        return new BookDao(sessionFactory);
     }
 
     @Bean
-    public GenreDao genreDao(JdbcTemplate jdbcTemplate) {
-        return new GenreDao(jdbcTemplate);
+    public GenreDao genreDao(SessionFactory sessionFactory) {
+        return new GenreDao(sessionFactory);
     }
 
     @Bean
