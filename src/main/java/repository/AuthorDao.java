@@ -1,58 +1,42 @@
 package repository;
 
 import model.Author;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
-
-import org.springframework.jdbc.core.RowMapper;
 
 import java.util.List;
 
 @Repository
+@SuppressWarnings("resource")
 public class AuthorDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final SessionFactory sessionFactory;
 
-    public AuthorDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public AuthorDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    public Author findById(Long id) {
-        String sql = "SELECT * FROM author WHERE id = ?";
+    private Session session(){
+        return sessionFactory.getCurrentSession();
+    }
 
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Author findById(long id) {
+        return session().find(Author.class, id);
     }
 
     public List<Author> findAll() {
-        String sql = "SELECT * FROM author";
-
-        return jdbcTemplate.query(sql, rowMapper);
+        return session().createQuery("from Author", Author.class).list();
     }
 
     public void create(Author author) {
-        String sql = "INSERT INTO author (first_name, last_name) VALUES (?, ?)";
-
-        jdbcTemplate.update(sql, author.getFirstName(), author.getLastName());
+        session().persist(author);
     }
 
     public void update(Author author) {
-        String sql = "UPDATE author SET first_name = ?, last_name = ? WHERE id = ?";
-
-        jdbcTemplate.update(sql, author.getFirstName(), author.getLastName(), author.getId());
+        session().merge(author);
     }
 
-    public void delete(Integer id) {
-        String sql = "DELETE FROM author WHERE id = ?";
-
-        jdbcTemplate.update(sql, id);
+    public void delete(long id) {
+        session().remove(id);
     }
-
-    private final RowMapper<Author> rowMapper = (resultSet, rowNum) -> {
-        Author author = new Author();
-
-        author.setId(resultSet.getLong("id"));
-        author.setFirstName(resultSet.getString("first_name"));
-        author.setLastName(resultSet.getString("last_name"));
-
-        return author;
-    };
 }
