@@ -18,6 +18,8 @@ dependencies {
     implementation("org.springframework:spring-aop:$spring")
     implementation("org.postgresql:postgresql:42.7.7")
     implementation("org.hibernate:hibernate-core:7.1.3.Final")
+    implementation("org.hibernate.orm:hibernate-jcache:7.1.3.Final")
+    implementation("com.github.ben-manes.caffeine:jcache:3.1.8")
     implementation("org.springframework:spring-tx:${spring}")
     implementation("org.aspectj:aspectjweaver:1.9.22.1")
     implementation("org.slf4j:slf4j-api:2.0.16")
