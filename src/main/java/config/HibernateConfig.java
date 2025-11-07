@@ -34,7 +34,7 @@ public class HibernateConfig {
         var sessionFactory = new LocalSessionFactoryBean();
 
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("repository");
+        sessionFactory.setPackagesToScan("model");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;
@@ -44,7 +44,6 @@ public class HibernateConfig {
     public DataSource dataSource() {
         var dataSource = new DriverManagerDataSource();
 
-        dataSource.setDriverClassName(env.getProperty("database.driver"));
         dataSource.setUrl(env.getProperty("database.url"));
         dataSource.setUsername(env.getProperty("database.username"));
         dataSource.setPassword(env.getProperty("database.password"));

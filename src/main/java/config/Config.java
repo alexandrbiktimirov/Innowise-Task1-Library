@@ -57,7 +57,7 @@ public class Config {
     }
 
     @Bean
-    public BookController bookController(BookService bookService){
-        return new BookController(bookService);
+    public BookController bookController(BookService bookService, GenreService genreService, AuthorService authorService){
+        return new BookController(bookService, genreService, authorService);
     }
 }
