@@ -79,6 +79,6 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Id: " + id + ", Title: " + title + ", Author id: " + author.getId() + ", Description: " + description + ". Genre id: " + genre.getName();
+        return "Id: " + id + ", Title: " + title + ", Author id: " + author.getId() + ", Description: " + description + ". Genre: " + genre.getName();
     }
 }
