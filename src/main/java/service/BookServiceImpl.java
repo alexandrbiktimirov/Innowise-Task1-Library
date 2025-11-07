@@ -11,6 +11,7 @@ import repository.BookDao;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class BookServiceImpl implements BookService {
 
     private final BookDao bookDao;

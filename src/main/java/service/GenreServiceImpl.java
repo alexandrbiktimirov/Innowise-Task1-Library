@@ -9,6 +9,7 @@ import repository.GenreDao;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class GenreServiceImpl implements GenreService {
 
     private final GenreDao genreDao;
@@ -22,7 +23,6 @@ public class GenreServiceImpl implements GenreService {
         return genreDao.findAll();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Genre getGenreById(Long id) {
         try {

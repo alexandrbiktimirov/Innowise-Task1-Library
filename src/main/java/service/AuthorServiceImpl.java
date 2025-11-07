@@ -9,6 +9,7 @@ import repository.AuthorDao;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorDao authorDao;
 
