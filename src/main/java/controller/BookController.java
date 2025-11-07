@@ -1,8 +1,12 @@
 package controller;
 
 import main.Main;
+import model.Author;
+import model.Genre;
 import org.springframework.stereotype.Component;
+import service.AuthorService;
 import service.BookService;
+import service.GenreService;
 
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -10,11 +14,15 @@ import java.util.Scanner;
 @Component
 public class BookController {
     private final BookService bookService;
+    private final GenreService genreService;
+    private final AuthorService authorService;
     private ResourceBundle messages;
     private final Scanner scanner = new Scanner(System.in);
 
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, GenreService genreService, AuthorService authorService) {
         this.bookService = bookService;
+        this.genreService = genreService;
+        this.authorService = authorService;
     }
 
     public void showMenu() {
@@ -50,9 +58,11 @@ public class BookController {
 
     public void createBook() {
         boolean running = true;
+
         while (running) {
             System.out.println(messages.getString("book.create.title"));
             String title = scanner.nextLine().trim();
+
             if (title.isEmpty()) {
                 System.out.println(messages.getString("book.create.invalid.title"));
                 continue;
@@ -60,10 +70,15 @@ public class BookController {
 
             System.out.println(messages.getString("book.create.authorId"));
             String authorIdStr = scanner.nextLine().trim();
-            long authorId;
+
+            Author author;
             try {
-                authorId = Long.parseLong(authorIdStr);
-                if (authorId <= 0) throw new NumberFormatException();
+                author = authorService.getAuthorById(Long.parseLong(authorIdStr));
+
+                if (author == null) {
+                    System.out.println(messages.getString("book.create.invalid.authorId"));
+                    continue;
+                }
             } catch (NumberFormatException e) {
                 System.out.println(messages.getString("book.create.invalid.authorId"));
                 continue;
@@ -78,17 +93,20 @@ public class BookController {
 
             System.out.println(messages.getString("book.create.genreId"));
             String genreIdStr = scanner.nextLine().trim();
-            long genreId;
+            Genre genre;
             try {
-                genreId = Long.parseLong(genreIdStr);
-                if (genreId <= 0) throw new NumberFormatException();
+                genre = genreService.getGenreById(Long.parseLong(genreIdStr));
+
+                if (genre == null) {
+                    System.out.println(messages.getString("book.create.invalid.genreId"));
+                    continue;
+                }
+
+                bookService.createBook(title, author, description, genre);
+                running = false;
             } catch (NumberFormatException e) {
                 System.out.println(messages.getString("book.create.invalid.genreId"));
-                continue;
             }
-
-            bookService.createBook(title, authorId, description, genreId);
-            running = false;
         }
     }
 
@@ -126,10 +144,15 @@ public class BookController {
 
             System.out.println(messages.getString("book.update.authorId"));
             String authorIdStr = scanner.nextLine().trim();
-            long authorId;
+
+            Author author;
             try {
-                authorId = Long.parseLong(authorIdStr);
-                if (authorId <= 0) throw new NumberFormatException();
+                author = authorService.getAuthorById(Long.parseLong(authorIdStr));
+
+                if (author == null) {
+                    System.out.println(messages.getString("book.update.invalid.authorId"));
+                    continue;
+                }
             } catch (NumberFormatException e) {
                 System.out.println(messages.getString("book.update.invalid.authorId"));
                 continue;
@@ -144,17 +167,21 @@ public class BookController {
 
             System.out.println(messages.getString("book.update.genreId"));
             String genreIdStr = scanner.nextLine().trim();
-            long genreId;
+
             try {
-                genreId = Long.parseLong(genreIdStr);
-                if (genreId <= 0) throw new NumberFormatException();
+                Genre genre = genreService.getGenreById(Long.parseLong(genreIdStr));
+
+                if (genre == null) {
+                    System.out.println(messages.getString("book.update.invalid.genreId"));
+                    continue;
+                }
+
+                bookService.updateBook(id, title, author, description, genre);
+
+                running = false;
             } catch (NumberFormatException e) {
                 System.out.println(messages.getString("book.update.invalid.genreId"));
-                continue;
             }
-
-            bookService.updateBook(id, title, authorId, description, genreId);
-            running = false;
         }
     }
 
