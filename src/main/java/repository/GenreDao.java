@@ -1,49 +1,52 @@
 package repository;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import model.Genre;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
+@SuppressWarnings("resource")
 public class GenreDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final SessionFactory sessionFactory;
 
-    public GenreDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public GenreDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    public Genre findById(Long id) {
-        String sql = "SELECT * FROM genre WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Genre findById(long id) {
+        return session().find(Genre.class, id);
     }
 
     public List<Genre> findAll() {
-        String sql = "SELECT * FROM genre ORDER BY name";
-        return jdbcTemplate.query(sql, rowMapper);
+        CriteriaBuilder cb = session().getCriteriaBuilder();
+        CriteriaQuery<Genre> cq = cb.createQuery(Genre.class);
+        Root<Genre> genre = cq.from(Genre.class);
+        cq.select(genre);
+
+        return session().createQuery(cq).getResultList();
+
+        //return session().createQuery("from Genre", Genre.class).list();
     }
 
-    public void create(Genre genre) {
-        String sql = "INSERT INTO genre (name) VALUES (?)";
-        jdbcTemplate.update(sql, genre.getName());
+    public void create(Genre Genre) {
+        session().persist(Genre);
     }
 
-    public void update(Genre genre) {
-        String sql = "UPDATE genre SET name = ? WHERE id = ?";
-        jdbcTemplate.update(sql, genre.getName(), genre.getId());
+    public void update(Genre Genre) {
+        session().merge(Genre);
     }
 
-    public void delete(Long id) {
-        String sql = "DELETE FROM genre WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+    public void delete(long id) {
+        session().remove(id);
     }
 
-    private final RowMapper<Genre> rowMapper = (rs, rowNum) -> {
-        Genre g = new Genre(null);
-        g.setId(rs.getLong("id"));
-        g.setName(rs.getString("name"));
-        return g;
-    };
+    private Session session(){
+        return sessionFactory.getCurrentSession();
+    }
 }
