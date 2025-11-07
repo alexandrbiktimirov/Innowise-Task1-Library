@@ -1,7 +1,8 @@
 package service;
 
-import aop.Cached;
+import model.Author;
 import model.Book;
+import model.Genre;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Cached
     public Book getBookById(Long id) {
         try {
             return bookDao.findById(id);
@@ -35,20 +35,20 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void createBook(String title, long authorId, String description, long genreId) {
-        Book book = new Book(title, authorId, description, genreId);
+    public void createBook(String title, Author author, String description, Genre genre) {
+        Book book = new Book(title, author, genre, description);
 
         bookDao.create(book);
     }
 
     @Transactional
     @Override
-    public void updateBook(long id, String title, long authorId, String description, long genreId) {
+    public void updateBook(long id, String title, Author author, String description, Genre genre) {
         Book book = getBookById(id);
         book.setTitle(title);
-        book.setAuthorId(authorId);
+        book.setAuthor(author);
         book.setDescription(description);
-        book.setGenreId(genreId);
+        book.setGenre(genre);
 
         bookDao.update(book);
     }

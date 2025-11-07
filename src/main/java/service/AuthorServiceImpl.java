@@ -1,6 +1,5 @@
 package service;
 
-import aop.Cached;
 import model.Author;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,8 @@ public class AuthorServiceImpl implements AuthorService {
         return authorDao.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
-    @Cached
     public Author getAuthorById(long id) {
         try {
             return authorDao.findById(id);

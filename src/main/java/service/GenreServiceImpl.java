@@ -1,6 +1,5 @@
 package service;
 
-import aop.Cached;
 import model.Genre;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,8 +22,8 @@ public class GenreServiceImpl implements GenreService {
         return genreDao.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
-    @Cached
     public Genre getGenreById(Long id) {
         try {
             return genreDao.findById(id);
