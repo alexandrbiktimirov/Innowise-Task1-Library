@@ -1,6 +1,9 @@
 # Configuration
 /src/main/resources/database.properties
 
+# Data
+/src/main/resources/data.sql
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

@@ -1,4 +1,6 @@
 plugins {
+    id("org.springframework.boot") version "3.4.0"
+    id("io.spring.dependency-management") version "1.1.6"
     id("java")
 }
 
@@ -9,25 +11,23 @@ repositories {
     mavenCentral()
 }
 
-val spring = "6.2.7"
 val junitBom = "5.10.2"
 
 dependencies {
-    implementation("org.springframework:spring-context:$spring")
-    implementation("org.springframework:spring-orm:$spring")
-    implementation("org.springframework:spring-aop:$spring")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.mapstruct:mapstruct:1.6.3")
     implementation("org.postgresql:postgresql:42.7.7")
-    implementation("org.hibernate:hibernate-core:7.1.3.Final")
-    implementation("org.hibernate.orm:hibernate-jcache:7.1.3.Final")
-    implementation("com.github.ben-manes.caffeine:jcache:3.1.8")
-    implementation("org.springframework:spring-tx:${spring}")
     implementation("org.aspectj:aspectjweaver:1.9.22.1")
-    implementation("org.slf4j:slf4j-api:2.0.16")
-    runtimeOnly("ch.qos.logback:logback-classic:1.5.13")
-    implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
     testImplementation(platform("org.junit:junit-bom:$junitBom"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 }
 
 tasks.test {
