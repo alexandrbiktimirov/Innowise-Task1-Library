@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "24285ba3-c848-4458-89c6-625b30441850",
+		"name": "httpbin.org collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "42562706"
+	},
+	"item": [
+		{
+			"name": "https://httpbin.org/get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://httpbin.org/get"
+			},
+			"response": []
+		},
+		{
+			"name": "https://httpbin.org/headers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://httpbin.org/headers"
+			},
+			"response": []
+		},
+		{
+			"name": "https://httpbin.org/response-headers",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "https://httpbin.org/response-headers"
+			},
+			"response": []
+		},
+		{
+			"name": "https://httpbin.org/redirect-to",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "https://httpbin.org/redirect-to"
+			},
+			"response": []
+		},
+		{
+			"name": "https://httpbin.org/anything",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": "https://httpbin.org/anything"
+			},
+			"response": []
+		}
+	]
+}
