@@ -15,6 +15,9 @@ public class Book {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "image_id", nullable = false)
+    private String imageId;
+
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
@@ -75,6 +78,14 @@ public class Book {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    public String getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
     }
 
     @Override

@@ -13,6 +13,7 @@ CREATE TABLE book (
     id SERIAL PRIMARY KEY,
     title TEXT,
     description TEXT,
+    image_id TEXT,
     author_id INT NOT NULL REFERENCES author(id),
     genre_id INT NOT NULL REFERENCES genre(id)
 );

@@ -22,6 +22,7 @@ dependencies {
     implementation("org.aspectj:aspectjweaver:1.9.22.1")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     testImplementation(platform("org.junit:junit-bom:$junitBom"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

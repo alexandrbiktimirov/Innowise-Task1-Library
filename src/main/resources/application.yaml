@@ -1,6 +1,9 @@
 spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/library
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/library
     username: appuser
     password: apppass
     driver-class-name: org.postgresql.Driver
