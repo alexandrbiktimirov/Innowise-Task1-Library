@@ -23,8 +23,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation(platform("org.junit:junit-bom:$junitBom"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
