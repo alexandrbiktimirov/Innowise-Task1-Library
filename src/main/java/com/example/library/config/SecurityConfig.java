@@ -4,6 +4,7 @@ import com.example.library.security.JwtAuthenticationFilter;
 import com.example.library.security.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -57,6 +58,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/v1/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint()))
