@@ -1,13 +1,16 @@
 package com.example.library.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-@Table(name = "user")
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -16,7 +19,11 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private boolean locked = true;
+    @ElementCollection
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
@@ -50,11 +57,11 @@ public class User {
         this.password = password;
     }
 
-    public boolean isLocked() {
-        return locked;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

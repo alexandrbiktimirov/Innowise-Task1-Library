@@ -24,10 +24,14 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     testImplementation(platform("org.junit:junit-bom:$junitBom"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
