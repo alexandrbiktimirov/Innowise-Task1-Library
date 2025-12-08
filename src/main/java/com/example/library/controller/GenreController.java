@@ -3,7 +3,6 @@ package com.example.library.controller;
 import com.example.library.dto.genre.GenreCreateDto;
 import com.example.library.dto.genre.GenreDto;
 import com.example.library.dto.genre.GenreUpdateDto;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.example.library.service.GenreService;
 
@@ -29,19 +28,16 @@ public class GenreController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public void addGenre(@RequestBody GenreCreateDto dto) {
         genreService.createGenre(dto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public void updateGenre(@PathVariable long id, @RequestBody GenreUpdateDto dto) {
         genreService.updateGenre(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public void deleteGenre(@PathVariable long id) {
         genreService.deleteGenre(id);
     }
