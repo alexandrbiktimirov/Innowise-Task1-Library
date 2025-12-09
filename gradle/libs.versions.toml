@@ -1,0 +1,61 @@
+[versions]
+spring-boot = "3.4.0"
+mapstruct = "1.6.3"
+postgresql = "42.7.7"
+aspectj = "1.9.22.1"
+jakarta-annotation = "3.0.0"
+jjwt = "0.13.0"
+testcontainers = "1.21.3"
+junit = "5.10.2"
+
+[libraries]
+spring-data = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
+spring-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "spring-boot" }
+spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
+spring-mongodb = { module = "org.springframework.boot:spring-boot-starter-data-mongodb", version.ref = "spring-boot" }
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
+spring-boot-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-security-test = { module = "org.springframework.security:spring-security-test" }
+
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
+
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+
+aspectjweaver = { module = "org.aspectj:aspectjweaver", version.ref = "aspectj" }
+
+jakarta-annotation = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakarta-annotation" }
+
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
+
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+
+[bundles]
+spring-boot-starter-implementation = [
+    "spring-data",
+    "spring-web",
+    "spring-aop",
+    "spring-validation",
+    "spring-mongodb",
+    "spring-security"
+]
+
+testcontainers-all = [
+    "testcontainers-postgresql",
+    "testcontainers-junit-jupiter"
+]
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version = "1.1.6" }
+java = { id = "java" }
