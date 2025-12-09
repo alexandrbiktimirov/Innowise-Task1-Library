@@ -9,7 +9,6 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.example.library.service.BookService;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,19 +41,16 @@ public class BookController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public void addBook(@RequestBody BookCreateDto dto) {
         bookService.createBook(dto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public void updateBook(@PathVariable long id, @RequestBody BookUpdateDto dto) {
         bookService.updateBook(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public void deleteBook(@PathVariable long id) {
         bookService.deleteBook(id);
     }
@@ -89,7 +85,6 @@ public class BookController {
             path = "/{id}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> uploadBookImage(@PathVariable long id, @RequestParam("file") MultipartFile file) throws IOException {
         bookImageService.uploadImage(id, file.getInputStream(), file.getOriginalFilename(), file.getContentType());
 
