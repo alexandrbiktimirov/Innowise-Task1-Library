@@ -1,12 +1,12 @@
 package controller;
 
 import exception.BookDoesNotExistException;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 import service.BookService;
 
 import java.util.Scanner;
 
-@Controller
+@Component
 public class BookController {
     private final BookService bookService;
     private final Scanner scanner = new Scanner(System.in);
