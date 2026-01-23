@@ -4,15 +4,15 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import exception.BookDoesNotExistException;
+import exception.LoadFromFileFailureException;
+import exception.WriteChangesToFileFailureException;
 import model.Book;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class BookService {
     private final List<Book> books = new ArrayList<>();
 
@@ -29,13 +29,14 @@ public class BookService {
                 .withHeader()
                 .withColumnSeparator(',');
 
-        try (MappingIterator<Book> iterator = mapper.readerFor(Book.class).with(schema).readValues(csvFile)){
-            while(iterator.hasNext()){
+        try (MappingIterator<Book> iterator = mapper.readerFor(Book.class).with(schema).readValues(csvFile)) {
+            while (iterator.hasNext()) {
                 Book book = iterator.next();
                 books.add(book);
             }
-        } catch(Exception e){
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new LoadFromFileFailureException("Could not load books from file");
         }
     }
 
@@ -94,12 +95,13 @@ public class BookService {
 
         try {
             mapper.writerFor(
-                    mapper.getTypeFactory().constructParametricType(java.util.List.class, Book.class)
+                            mapper.getTypeFactory().constructParametricType(java.util.List.class, Book.class)
                     )
                     .with(schema)
                     .writeValue(csvFile, books);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new WriteChangesToFileFailureException("Could not write books to file");
         }
     }
 }

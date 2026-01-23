@@ -1,12 +1,12 @@
 package controller;
 
+import command.*;
 import exception.BookDoesNotExistException;
-import org.springframework.stereotype.Component;
 import service.BookService;
 
+import java.util.Map;
 import java.util.Scanner;
 
-@Component
 public class BookController {
     private final BookService bookService;
     private final Scanner scanner = new Scanner(System.in);
@@ -16,9 +16,16 @@ public class BookController {
     }
 
     public void start() {
-        boolean quit = false;
+        var context = new CommandsContext(scanner, bookService);
+        Map<Integer, Command> commands = Map.of(
+                1, new DisplayAllBooks(context),
+                2, new CreateNewBook(context),
+                3, new UpdateBook(context),
+                4, new DeleteBook(context),
+                5, new QuitProgram(context)
+        );
 
-        while (!quit) {
+        while (true) {
             System.out.println("Please select one of the following options (enter only a number): ");
             System.out.println("1 - Display book list");
             System.out.println("2 - Create a new book");
@@ -27,23 +34,17 @@ public class BookController {
             System.out.println("5 - Quit the program");
 
             String input = scanner.nextLine().trim();
-            try {
-                int option = Integer.parseInt(input);
+            int option = isFormatValid(input);
 
-                switch (option) {
-                    case 1 -> displayAllBooks();
-                    case 2 -> createNewBook();
-                    case 3 -> updateBook();
-                    case 4 -> deleteBook();
-                    case 5 -> quit = true;
-                    default -> System.out.println("Invalid option");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid option. Please enter a number from 1 to 5");
+            var command = commands.get(option);
+
+            if (command == null) {
+                System.out.println("Invalid option");
+                continue;
             }
-        }
 
-        bookService.writeChangesToFile();
+            command.execute();
+        }
     }
 
     public void displayAllBooks() {
@@ -88,14 +89,7 @@ public class BookController {
         System.out.println("Please enter the id of the book you would like to edit: ");
 
         String inputId = scanner.nextLine().trim();
-        int id;
-
-        try{
-            id = Integer.parseInt(inputId);
-        } catch (NumberFormatException e){
-            System.out.println("Invalid id entered, please try again");
-            return;
-        }
+        int id = isFormatValid(inputId);
 
         System.out.println("What would you like to edit?");
         System.out.println("1 - Title");
@@ -107,7 +101,7 @@ public class BookController {
         int option;
         try {
             option = Integer.parseInt(inputOption);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("Invalid option entered, please try again");
             return;
         }
@@ -117,34 +111,19 @@ public class BookController {
                 System.out.println("Enter the new title of the book: ");
                 String newTitle = scanner.next().trim();
 
-                try {
-                    bookService.updateBookTitle(id, newTitle);
-                    System.out.println("Title updated successfully");
-                } catch (BookDoesNotExistException e) {
-                    System.out.println(e.getMessage());
-                }
+                executeAction(() -> bookService.updateBookTitle(id, newTitle), "Title updated successfully");
             }
             case 2 -> {
                 System.out.println("Enter the new author of the book: ");
                 String newAuthor = scanner.next().trim();
 
-                try {
-                    bookService.updateBookAuthor(id, newAuthor);
-                    System.out.println("Author updated successfully");
-                } catch (BookDoesNotExistException e) {
-                    System.out.println(e.getMessage());
-                }
+                executeAction(() -> bookService.updateBookAuthor(id, newAuthor), "Author updated successfully");
             }
             case 3 -> {
                 System.out.println("Enter the new description of the book: ");
                 String newDescription = scanner.next().trim();
 
-                try {
-                    bookService.updateBookDescription(id, newDescription);
-                    System.out.println("Description updated successfully");
-                } catch (BookDoesNotExistException e) {
-                    System.out.println(e.getMessage());
-                }
+                executeAction(() -> bookService.updateBookDescription(id, newDescription), "Description updated successfully");
             }
             case 4 -> {
                 System.out.println("Enter the new title of the book: ");
@@ -154,12 +133,7 @@ public class BookController {
                 System.out.println("Enter the new description of the book: ");
                 String newDescription = scanner.next().trim();
 
-                try {
-                    bookService.updateBook(id, newTitle, newAuthor, newDescription);
-                    System.out.println("Book updated successfully");
-                } catch (BookDoesNotExistException e) {
-                    System.out.println(e.getMessage());
-                }
+                executeAction(() -> bookService.updateBook(id, newTitle, newAuthor, newDescription), "Book updated successfully");
             }
             default -> System.out.println("Invalid option. Please try again");
         }
@@ -173,16 +147,29 @@ public class BookController {
         int id;
         try {
             id = Integer.parseInt(inputId);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("Invalid id entered, please try again");
             return;
         }
 
+        executeAction(() -> bookService.deleteBook(id), "Book deleted successfully");
+    }
+
+    public static void executeAction(Runnable action, String message) {
         try {
-            bookService.deleteBook(id);
-            System.out.println("Book deleted successfully");
+            action.run();
+            System.out.println(message);
         } catch (BookDoesNotExistException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public static int isFormatValid(String id) {
+        try {
+            return Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid id entered, please try again");
+            return -1;
         }
     }
 }
