@@ -1,94 +1,53 @@
 package controller;
 
+import command.*;
 import exception.BookDoesNotExistException;
-import org.springframework.stereotype.Component;
-import model.Book;
 import service.BookService;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.Map;
 import java.util.Scanner;
 
-@Component
 public class BookController {
     private final BookService bookService;
     private final Scanner scanner = new Scanner(System.in);
-    private ResourceBundle messages;
 
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
     public void start() {
-        chooseLanguage();
+        var context = new CommandsContext(scanner, bookService);
+        Map<Integer, Command> commands = Map.of(
+                1, new DisplayAllBooks(context),
+                2, new CreateNewBook(context),
+                3, new UpdateBook(context),
+                4, new DeleteBook(context),
+                5, new QuitProgram(context)
+        );
 
-        boolean quit = false;
-
-        while (!quit) {
-            System.out.println(messages.getString("start.select"));
-            System.out.println(messages.getString("start.display"));
-            System.out.println(messages.getString("start.create"));
-            System.out.println(messages.getString("start.update"));
-            System.out.println(messages.getString("start.delete"));
-            System.out.println(messages.getString("start.quit"));
+        while (true) {
+            System.out.println("Please select one of the following options (enter only a number): ");
+            System.out.println("1 - Display book list");
+            System.out.println("2 - Create a new book");
+            System.out.println("3 - Update a book");
+            System.out.println("4 - Delete a book");
+            System.out.println("5 - Quit the program");
 
             String input = scanner.nextLine().trim();
-            try {
-                int option = Integer.parseInt(input);
+            int option = isFormatValid(input);
 
-                switch (option) {
-                    case 1 -> displayAllBooks();
-                    case 2 -> createNewBook();
-                    case 3 -> updateBook();
-                    case 4 -> deleteBook();
-                    case 5 -> quit = true;
-                    default -> System.out.println(messages.getString("start.invalid.option"));
-                }
-            } catch (NumberFormatException e) {
-                System.out.println(messages.getString("start.invalid.option"));
-            }
-        }
+            var command = commands.get(option);
 
-        bookService.writeChangesToFile();
-    }
-
-    public void chooseLanguage() {
-        boolean languageChosen = false;
-
-        while (!languageChosen) {
-            System.out.println("Please select the language/Poproszę wybrać język:");
-            System.out.println("1. English");
-            System.out.println("2. Polski");
-
-            String choice = scanner.nextLine().trim();
-            Locale locale;
-
-            try {
-                int id = Integer.parseInt(choice);
-
-                switch (id) {
-                    case 1 -> locale = Locale.ENGLISH;
-                    case 2 -> locale = new Locale("pl");
-                    default -> throw new Exception();
-                }
-            } catch (Exception e) {
-                System.out.println("Invalid input, please try again / Niepoprawna opcja, poproszę powtórzyć");
+            if (command == null) {
+                System.out.println("Invalid option");
                 continue;
             }
 
-            messages = ResourceBundle.getBundle("messages", locale);
-            languageChosen = true;
+            command.execute();
         }
     }
 
     public void displayAllBooks() {
-        List<Book> books = bookService.readAllBooks();
-
-        if (books.isEmpty()){
-            System.out.println(messages.getString("books.empty"));
-        }
-
         bookService.readAllBooks().forEach(System.out::println);
     }
 
@@ -96,27 +55,27 @@ public class BookController {
         boolean correctData = false;
 
         while (!correctData) {
-            System.out.println(messages.getString("create.name"));
+            System.out.println("Please enter the name of the book: ");
             String name = scanner.nextLine().trim();
 
             if (name.isEmpty()) {
-                System.out.println(messages.getString("create.invalid.name"));
+                System.out.println("Invalid name of the book, please try again");
                 continue;
             }
 
-            System.out.println(messages.getString("create.author"));
+            System.out.println("Please enter the author of the book: ");
             String author = scanner.nextLine().trim();
 
             if (author.isEmpty()) {
-                System.out.println(messages.getString("create.invalid.author"));
+                System.out.println("Invalid author of the book, please try again");
                 continue;
             }
 
-            System.out.println(messages.getString("create.description"));
+            System.out.println("Please enter the description the book: ");
             String description = scanner.nextLine().trim();
 
             if (description.isEmpty()) {
-                System.out.println(messages.getString("create.invalid.description"));
+                System.out.println("Invalid description of the book, please try again");
                 continue;
             }
 
@@ -127,104 +86,90 @@ public class BookController {
 
     public void updateBook() {
         displayAllBooks();
-        System.out.println(messages.getString("update.id"));
+        System.out.println("Please enter the id of the book you would like to edit: ");
 
         String inputId = scanner.nextLine().trim();
-        int id;
+        int id = isFormatValid(inputId);
 
-        try{
-            id = Integer.parseInt(inputId);
-        } catch (NumberFormatException e){
-            System.out.println(messages.getString("update.invalid.id"));
-            return;
-        }
-
-        System.out.println(messages.getString("update.options"));
-        System.out.println(messages.getString("update.options.title"));
-        System.out.println(messages.getString("update.options.author"));
-        System.out.println(messages.getString("update.options.description"));
-        System.out.println(messages.getString("update.options.everything"));
+        System.out.println("What would you like to edit?");
+        System.out.println("1 - Title");
+        System.out.println("2 - Author");
+        System.out.println("3 - Description");
+        System.out.println("4 - Everything");
 
         String inputOption = scanner.nextLine().trim();
         int option;
         try {
             option = Integer.parseInt(inputOption);
-        } catch (NumberFormatException e){
-            System.out.println(messages.getString("update.invalid.option"));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid option entered, please try again");
             return;
         }
 
         switch (option) {
             case 1 -> {
-                System.out.println(messages.getString("update.title"));
+                System.out.println("Enter the new title of the book: ");
                 String newTitle = scanner.next().trim();
 
-                try {
-                    bookService.updateBookTitle(id, newTitle);
-                    System.out.println(messages.getString("update.successful.title"));
-                } catch (BookDoesNotExistException e) {
-                    System.out.println(messages.getString("book.exception.first") + id + messages.getString("book.exception.second"));
-                }
+                executeAction(() -> bookService.updateBookTitle(id, newTitle), "Title updated successfully");
             }
             case 2 -> {
-                System.out.println(messages.getString("update.author"));
+                System.out.println("Enter the new author of the book: ");
                 String newAuthor = scanner.next().trim();
 
-                try {
-                    bookService.updateBookAuthor(id, newAuthor);
-                    System.out.println(messages.getString("update.successful.author"));
-                } catch (BookDoesNotExistException e) {
-                    System.out.println(messages.getString("book.exception.first") + id + messages.getString("book.exception.second"));
-                }
+                executeAction(() -> bookService.updateBookAuthor(id, newAuthor), "Author updated successfully");
             }
             case 3 -> {
-                System.out.println(messages.getString("update.description"));
+                System.out.println("Enter the new description of the book: ");
                 String newDescription = scanner.next().trim();
 
-                try {
-                    bookService.updateBookDescription(id, newDescription);
-                    System.out.println(messages.getString("update.successful.description"));
-                } catch (BookDoesNotExistException e) {
-                    System.out.println(messages.getString("book.exception.first") + id + messages.getString("book.exception.second"));
-                }
+                executeAction(() -> bookService.updateBookDescription(id, newDescription), "Description updated successfully");
             }
             case 4 -> {
-                System.out.println(messages.getString("update.title"));
+                System.out.println("Enter the new title of the book: ");
                 String newTitle = scanner.next().trim();
-                System.out.println(messages.getString("update.author"));
+                System.out.println("Enter the new author of the book: ");
                 String newAuthor = scanner.next().trim();
-                System.out.println(messages.getString("update.description"));
+                System.out.println("Enter the new description of the book: ");
                 String newDescription = scanner.next().trim();
 
-                try {
-                    bookService.updateBook(id, newTitle, newAuthor, newDescription);
-                    System.out.println(messages.getString("update.successful.everything"));
-                } catch (BookDoesNotExistException e) {
-                    System.out.println(messages.getString("book.exception.first") + id + messages.getString("book.exception.second"));
-                }
+                executeAction(() -> bookService.updateBook(id, newTitle, newAuthor, newDescription), "Book updated successfully");
             }
-            default -> System.out.println(messages.getString("update.invalid.option"));
+            default -> System.out.println("Invalid option. Please try again");
         }
     }
 
     public void deleteBook() {
         displayAllBooks();
-        System.out.println(messages.getString("delete.id"));
+        System.out.println("Please enter the id of the book you would like to delete: ");
 
         String inputId = scanner.nextLine().trim();
         int id;
         try {
             id = Integer.parseInt(inputId);
-        } catch (NumberFormatException e){
-            System.out.println(messages.getString("delete.invalid.id"));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid id entered, please try again");
             return;
         }
 
+        executeAction(() -> bookService.deleteBook(id), "Book deleted successfully");
+    }
+
+    public static void executeAction(Runnable action, String message) {
         try {
-            bookService.deleteBook(id);
-            System.out.println(messages.getString("delete.successful"));
+            action.run();
+            System.out.println(message);
         } catch (BookDoesNotExistException e) {
-            System.out.println(messages.getString("book.exception.first") + id + messages.getString("book.exception.second"));
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static int isFormatValid(String id) {
+        try {
+            return Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid id entered, please try again");
+            return -1;
         }
     }
 }
