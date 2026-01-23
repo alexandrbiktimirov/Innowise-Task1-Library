@@ -4,11 +4,15 @@ import command.*;
 import exception.BookDoesNotExistException;
 import service.BookService;
 
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class BookController {
     private final BookService bookService;
+
+    private static ResourceBundle messages;
     private final Scanner scanner = new Scanner(System.in);
 
     public BookController(BookService bookService) {
@@ -16,7 +20,9 @@ public class BookController {
     }
 
     public void start() {
-        var context = new CommandsContext(scanner, bookService);
+        chooseLanguage();
+
+        var context = new CommandsContext(scanner, bookService, messages);
         Map<Integer, Command> commands = Map.of(
                 1, new DisplayAllBooks(context),
                 2, new CreateNewBook(context),
@@ -26,12 +32,12 @@ public class BookController {
         );
 
         while (true) {
-            System.out.println("Please select one of the following options (enter only a number): ");
-            System.out.println("1 - Display book list");
-            System.out.println("2 - Create a new book");
-            System.out.println("3 - Update a book");
-            System.out.println("4 - Delete a book");
-            System.out.println("5 - Quit the program");
+            System.out.println(messages.getString("start.select"));
+            System.out.println(messages.getString("start.display"));
+            System.out.println(messages.getString("start.create"));
+            System.out.println(messages.getString("start.update"));
+            System.out.println(messages.getString("start.delete"));
+            System.out.println(messages.getString("start.quit"));
 
             String input = scanner.nextLine().trim();
             int option = isFormatValid(input);
@@ -39,7 +45,7 @@ public class BookController {
             var command = commands.get(option);
 
             if (command == null) {
-                System.out.println("Invalid option");
+                System.out.println("start.invalid.option");
                 continue;
             }
 
@@ -47,112 +53,31 @@ public class BookController {
         }
     }
 
-    public void displayAllBooks() {
-        bookService.readAllBooks().forEach(System.out::println);
-    }
+    private void chooseLanguage() {
+        while (true) {
+            System.out.println("Please select the language / Poproszę wybrać język:");
+            System.out.println("1. English");
+            System.out.println("2. Polski");
 
-    public void createNewBook() {
-        boolean correctData = false;
+            String choice = scanner.nextLine().trim();
+            Locale locale;
 
-        while (!correctData) {
-            System.out.println("Please enter the name of the book: ");
-            String name = scanner.nextLine().trim();
+            try {
+                int id = Integer.parseInt(choice);
 
-            if (name.isEmpty()) {
-                System.out.println("Invalid name of the book, please try again");
+                switch (id) {
+                    case 1 -> locale = Locale.ENGLISH;
+                    case 2 -> locale = new Locale("pl");
+                    default -> throw new Exception();
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input, please try again / Niepoprawna opcja, poproszę powtórzyć");
                 continue;
             }
 
-            System.out.println("Please enter the author of the book: ");
-            String author = scanner.nextLine().trim();
-
-            if (author.isEmpty()) {
-                System.out.println("Invalid author of the book, please try again");
-                continue;
-            }
-
-            System.out.println("Please enter the description the book: ");
-            String description = scanner.nextLine().trim();
-
-            if (description.isEmpty()) {
-                System.out.println("Invalid description of the book, please try again");
-                continue;
-            }
-
-            bookService.createBook(name, author, description);
-            correctData = true;
+            messages = ResourceBundle.getBundle("messages", locale);
+            break;
         }
-    }
-
-    public void updateBook() {
-        displayAllBooks();
-        System.out.println("Please enter the id of the book you would like to edit: ");
-
-        String inputId = scanner.nextLine().trim();
-        int id = isFormatValid(inputId);
-
-        System.out.println("What would you like to edit?");
-        System.out.println("1 - Title");
-        System.out.println("2 - Author");
-        System.out.println("3 - Description");
-        System.out.println("4 - Everything");
-
-        String inputOption = scanner.nextLine().trim();
-        int option;
-        try {
-            option = Integer.parseInt(inputOption);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid option entered, please try again");
-            return;
-        }
-
-        switch (option) {
-            case 1 -> {
-                System.out.println("Enter the new title of the book: ");
-                String newTitle = scanner.next().trim();
-
-                executeAction(() -> bookService.updateBookTitle(id, newTitle), "Title updated successfully");
-            }
-            case 2 -> {
-                System.out.println("Enter the new author of the book: ");
-                String newAuthor = scanner.next().trim();
-
-                executeAction(() -> bookService.updateBookAuthor(id, newAuthor), "Author updated successfully");
-            }
-            case 3 -> {
-                System.out.println("Enter the new description of the book: ");
-                String newDescription = scanner.next().trim();
-
-                executeAction(() -> bookService.updateBookDescription(id, newDescription), "Description updated successfully");
-            }
-            case 4 -> {
-                System.out.println("Enter the new title of the book: ");
-                String newTitle = scanner.next().trim();
-                System.out.println("Enter the new author of the book: ");
-                String newAuthor = scanner.next().trim();
-                System.out.println("Enter the new description of the book: ");
-                String newDescription = scanner.next().trim();
-
-                executeAction(() -> bookService.updateBook(id, newTitle, newAuthor, newDescription), "Book updated successfully");
-            }
-            default -> System.out.println("Invalid option. Please try again");
-        }
-    }
-
-    public void deleteBook() {
-        displayAllBooks();
-        System.out.println("Please enter the id of the book you would like to delete: ");
-
-        String inputId = scanner.nextLine().trim();
-        int id;
-        try {
-            id = Integer.parseInt(inputId);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid id entered, please try again");
-            return;
-        }
-
-        executeAction(() -> bookService.deleteBook(id), "Book deleted successfully");
     }
 
     public static void executeAction(Runnable action, String message) {
@@ -160,7 +85,7 @@ public class BookController {
             action.run();
             System.out.println(message);
         } catch (BookDoesNotExistException e) {
-            System.out.println(e.getMessage());
+            System.out.println(messages.getString("book.exception"));
         }
     }
 
@@ -168,7 +93,7 @@ public class BookController {
         try {
             return Integer.parseInt(id);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid id entered, please try again");
+            System.out.println(messages.getString("invalid.id"));
             return -1;
         }
     }

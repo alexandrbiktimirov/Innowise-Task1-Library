@@ -12,11 +12,11 @@ public class DeleteBook implements Command {
     @Override
     public void execute() {
         commandsContext.bookService().readAllBooks().forEach(System.out::println);
-        System.out.println("Please enter the id of the book you would like to delete: ");
+        System.out.println(commandsContext.messages().getString("delete.id"));
 
         String inputId = commandsContext.scanner().nextLine().trim();
         int id = BookController.isFormatValid(inputId);
 
-        BookController.executeAction(() -> commandsContext.bookService().deleteBook(id), "Book deleted successfully");
+        BookController.executeAction(() -> commandsContext.bookService().deleteBook(id), commandsContext.messages().getString("delete.successful"));
     }
 }

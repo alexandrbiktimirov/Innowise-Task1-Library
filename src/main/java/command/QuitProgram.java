@@ -9,7 +9,7 @@ public class QuitProgram implements Command {
 
     @Override
     public void execute() {
-        System.out.println("Quitting...");
+        System.out.println(commandsContext.messages().getString("quitting"));
         commandsContext.bookService().writeChangesToFile();
         System.exit(0);
     }

@@ -10,20 +10,20 @@ public class CreateNewBook implements Command {
     @Override
     public void execute() {
         while (true) {
-            System.out.println("Please enter the name of the book: ");
+            System.out.println(commandsContext.messages().getString("create.name"));
             String name = commandsContext.scanner().nextLine().trim();
 
-            if (isEmpty(name, "Invalid name of the book, please try again")) continue;
+            if (isEmpty(name, commandsContext.messages().getString("create.invalid.name"))) continue;
 
-            System.out.println("Please enter the author of the book: ");
+            System.out.println(commandsContext.messages().getString("create.author"));
             String author = commandsContext.scanner().nextLine().trim();
 
-            if (isEmpty(author, "Invalid author of the book, please try again")) continue;
+            if (isEmpty(author, commandsContext.messages().getString("create.invalid.author"))) continue;
 
-            System.out.println("Please enter the description the book: ");
+            System.out.println(commandsContext.messages().getString("create.description"));
             String description = commandsContext.scanner().nextLine().trim();
 
-            if (isEmpty(description, "Invalid description of the book, please try again")) continue;
+            if (isEmpty(description, commandsContext.messages().getString("create.invalid.description"))) continue;
 
             commandsContext.bookService().createBook(name, author, description);
             break;

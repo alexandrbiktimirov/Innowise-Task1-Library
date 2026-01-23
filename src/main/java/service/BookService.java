@@ -42,11 +42,11 @@ public class BookService {
         }
     }
 
-    public Book getBookById(int id) throws BookDoesNotExistException {
+    public Book getBookById(int id) {
         return books.stream()
                 .filter(book -> book.getId() == id)
                 .findFirst()
-                .orElseThrow(BookDoesNotExistException::new);
+                .orElseThrow(() -> new BookDoesNotExistException("Book with id " + id + " does not exist"));
     }
 
     public List<Book> readAllBooks() {
