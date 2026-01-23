@@ -14,4 +14,5 @@ public interface BookService {
     void updateBookDescription(int id, String newDescription) throws BookDoesNotExistException;
     void updateBook(int id, String newTitle, String newAuthor, String newDescription) throws BookDoesNotExistException;
     void deleteBook(int id) throws BookDoesNotExistException;
+    void writeChangesToFile();
 }
