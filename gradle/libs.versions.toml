@@ -17,6 +17,7 @@ spring-mongodb = { module = "org.springframework.boot:spring-boot-starter-data-m
 spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
 spring-boot-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 spring-security-test = { module = "org.springframework.security:spring-security-test" }
+spring-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "spring-boot" }
 
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
 
@@ -35,6 +36,7 @@ jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
 
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
 testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-mongodb = { module = "org.testcontainers:mongodb", version.ref = "testcontainers" }
 
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
@@ -52,7 +54,8 @@ spring-boot-starter-implementation = [
 
 testcontainers-all = [
     "testcontainers-postgresql",
-    "testcontainers-junit-jupiter"
+    "testcontainers-junit-jupiter",
+    "testcontainers-mongodb"
 ]
 
 [plugins]

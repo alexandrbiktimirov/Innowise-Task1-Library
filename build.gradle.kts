@@ -25,6 +25,7 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.spring.security.test)
     testImplementation(libs.spring.boot.test)
+    testImplementation(libs.spring.testcontainers)
     testRuntimeOnly(libs.junit.platform.launcher)
 
     annotationProcessor(libs.spring.boot.configuration.processor)
