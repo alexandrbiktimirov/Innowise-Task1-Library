@@ -1,22 +1,41 @@
 package command;
 
-import controller.BookController;
+import i18n.Messages;
+import org.springframework.stereotype.Component;
+import service.BookService;
 
+import java.util.OptionalInt;
+import java.util.Scanner;
+
+@Component
 public class DeleteBook implements Command {
-    private final CommandsContext commandsContext;
+    private final Scanner scanner;
+    private final BookService bookService;
+    private final Messages messages;
+    private final CommandExecutor commandExecutor;
 
-    public DeleteBook(CommandsContext commandsContext) {
-        this.commandsContext = commandsContext;
+    public DeleteBook(Scanner scanner, BookService bookService, Messages messages, CommandExecutor commandExecutor) {
+        this.scanner = scanner;
+        this.bookService = bookService;
+        this.messages = messages;
+        this.commandExecutor = commandExecutor;
     }
 
     @Override
     public void execute() {
-        commandsContext.bookService().readAllBooks().forEach(System.out::println);
-        System.out.println(commandsContext.messages().getString("delete.id"));
+        bookService.readAllBooks().forEach(System.out::println);
+        System.out.println(messages.get("delete.id"));
 
-        String inputId = commandsContext.scanner().nextLine().trim();
-        int id = BookController.isFormatValid(inputId);
+        String inputId = scanner.nextLine().trim();
+        OptionalInt id = messages.parseIntOrPrint(inputId);
 
-        BookController.executeAction(() -> commandsContext.bookService().deleteBook(id), commandsContext.messages().getString("delete.successful"));
+        if (id.isEmpty()) return;
+
+        commandExecutor.executeAction(() -> bookService.deleteBook(id.getAsInt()), messages.get("delete.successful"));
+    }
+
+    @Override
+    public int id() {
+        return 4;
     }
 }

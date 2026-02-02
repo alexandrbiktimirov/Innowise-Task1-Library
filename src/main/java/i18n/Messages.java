@@ -1,0 +1,28 @@
+package i18n;
+
+import org.springframework.context.MessageSource;
+
+import java.util.OptionalInt;
+
+public class Messages {
+    private final MessageSource messageSource;
+    private final LocaleHolder localeHolder;
+
+    public Messages(MessageSource messageSource, LocaleHolder localeHolder) {
+        this.messageSource = messageSource;
+        this.localeHolder = localeHolder;
+    }
+
+    public String get(String key) {
+        return messageSource.getMessage(key, null, localeHolder.getLocale());
+    }
+
+    public OptionalInt parseIntOrPrint(String text) {
+        try {
+            return OptionalInt.of(Integer.parseInt(text));
+        } catch (NumberFormatException e) {
+            System.out.println(get("invalid.id"));
+            return OptionalInt.empty();
+        }
+    }
+}

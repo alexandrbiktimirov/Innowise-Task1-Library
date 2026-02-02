@@ -1,16 +1,28 @@
 package command;
 
-public class QuitProgram implements Command {
-    private final CommandsContext commandsContext;
+import i18n.Messages;
+import org.springframework.stereotype.Component;
+import service.BookService;
 
-    public QuitProgram(CommandsContext commandsContext) {
-        this.commandsContext = commandsContext;
+@Component
+public class QuitProgram implements Command {
+    private final BookService bookService;
+    private final Messages messages;
+
+    public QuitProgram(BookService bookService, Messages messages) {
+        this.bookService = bookService;
+        this.messages = messages;
     }
 
     @Override
     public void execute() {
-        System.out.println(commandsContext.messages().getString("quitting"));
-        commandsContext.bookService().writeChangesToFile();
+        System.out.println(messages.get("quitting"));
+        bookService.writeChangesToFile();
         System.exit(0);
+    }
+
+    @Override
+    public int id() {
+        return 5;
     }
 }

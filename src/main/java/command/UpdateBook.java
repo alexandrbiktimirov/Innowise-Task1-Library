@@ -1,74 +1,91 @@
 package command;
 
-import controller.BookController;
 import exception.BookDoesNotExistException;
+import i18n.Messages;
+import org.springframework.stereotype.Component;
+import service.BookService;
 
+import java.util.OptionalInt;
+import java.util.Scanner;
+
+@Component
 public class UpdateBook implements Command {
-    private final CommandsContext commandsContext;
+    private final Scanner scanner;
+    private final BookService bookService;
+    private final Messages messages;
+    private final CommandExecutor commandExecutor;
 
-    public UpdateBook(CommandsContext commandsContext) {
-        this.commandsContext = commandsContext;
+    public UpdateBook(Scanner scanner, BookService bookService, Messages messages, CommandExecutor commandExecutor) {
+        this.scanner = scanner;
+        this.bookService = bookService;
+        this.messages = messages;
+        this.commandExecutor = commandExecutor;
     }
 
     @Override
     public void execute() {
-        commandsContext.bookService().readAllBooks().forEach(System.out::println);
+        bookService.readAllBooks().forEach(System.out::println);
 
-        System.out.println(commandsContext.messages().getString("update.id"));
+        System.out.println(messages.get("update.id"));
 
-        String inputId = commandsContext.scanner().nextLine().trim();
-        int id = BookController.isFormatValid(inputId);
-        if (id == -1 || !doesBookExist(id)) return;
+        String inputId = scanner.nextLine().trim();
+        OptionalInt id = messages.parseIntOrPrint(inputId);
+        if (id.isEmpty()) return;
 
-        System.out.println(commandsContext.messages().getString("update.options"));
-        System.out.println(commandsContext.messages().getString("update.options.title"));
-        System.out.println(commandsContext.messages().getString("update.options.author"));
-        System.out.println(commandsContext.messages().getString("update.options.description"));
-        System.out.println(commandsContext.messages().getString("update.options.everything"));
+        System.out.println(messages.get("update.options"));
+        System.out.println(messages.get("update.options.title"));
+        System.out.println(messages.get("update.options.author"));
+        System.out.println(messages.get("update.options.description"));
+        System.out.println(messages.get("update.options.everything"));
 
-        String inputOption = commandsContext.scanner().nextLine().trim();
-        int option = BookController.isFormatValid(inputOption);
-        if (option == -1) return;
+        String inputOption = scanner.nextLine().trim();
+        OptionalInt option = messages.parseIntOrPrint(inputOption);
+        if (option.isEmpty() || !doesBookExist(option.getAsInt())) return;
 
-        switch (option) {
+        switch (option.getAsInt()) {
             case 1 -> {
-                System.out.println(commandsContext.messages().getString("update.title"));
-                String newTitle = commandsContext.scanner().nextLine().trim();
+                System.out.println(messages.get("update.title"));
+                String newTitle = scanner.nextLine().trim();
 
-                BookController.executeAction(() -> commandsContext.bookService().updateBookTitle(id, newTitle), commandsContext.messages().getString("update.successful.title"));
+                commandExecutor.executeAction(() -> bookService.updateBookTitle(id.getAsInt(), newTitle), messages.get("update.successful.title"));
             }
             case 2 -> {
-                System.out.println(commandsContext.messages().getString("update.author"));
-                String newAuthor = commandsContext.scanner().nextLine().trim();
+                System.out.println(messages.get("update.author"));
+                String newAuthor = scanner.nextLine().trim();
 
-                BookController.executeAction(() -> commandsContext.bookService().updateBookAuthor(id, newAuthor), commandsContext.messages().getString("update.successful.author"));
+                commandExecutor.executeAction(() -> bookService.updateBookAuthor(id.getAsInt(), newAuthor), messages.get("update.successful.author"));
             }
             case 3 -> {
-                System.out.println(commandsContext.messages().getString("update.description"));
-                String newDescription = commandsContext.scanner().nextLine().trim();
+                System.out.println(messages.get("update.description"));
+                String newDescription = scanner.nextLine().trim();
 
-                BookController.executeAction(() -> commandsContext.bookService().updateBookDescription(id, newDescription), commandsContext.messages().getString("update.successful.description"));
+                commandExecutor.executeAction(() -> bookService.updateBookDescription(id.getAsInt(), newDescription), messages.get("update.successful.description"));
             }
             case 4 -> {
-                System.out.println(commandsContext.messages().getString("update.title"));
-                String newTitle = commandsContext.scanner().nextLine().trim();
-                System.out.println(commandsContext.messages().getString("update.author"));
-                String newAuthor = commandsContext.scanner().nextLine().trim();
-                System.out.println(commandsContext.messages().getString("update.description"));
-                String newDescription = commandsContext.scanner().nextLine().trim();
+                System.out.println(messages.get("update.title"));
+                String newTitle = scanner.nextLine().trim();
+                System.out.println(messages.get("update.author"));
+                String newAuthor = scanner.nextLine().trim();
+                System.out.println(messages.get("update.description"));
+                String newDescription = scanner.nextLine().trim();
 
-                BookController.executeAction(() -> commandsContext.bookService().updateBook(id, newTitle, newAuthor, newDescription), commandsContext.messages().getString("update.successful.everything"));
+                commandExecutor.executeAction(() -> bookService.updateBook(id.getAsInt(), newTitle, newAuthor, newDescription), messages.get("update.successful.everything"));
             }
-            default -> System.out.println(commandsContext.messages().getString("update.invalid.option"));
+            default -> System.out.println(messages.get("update.invalid.option"));
         }
+    }
+
+    @Override
+    public int id() {
+        return 3;
     }
 
     private boolean doesBookExist(int id) {
         try {
-            commandsContext.bookService().getBookById(id);
+            bookService.getBookById(id);
             return true;
         } catch (BookDoesNotExistException e) {
-            System.out.println(commandsContext.messages().getString("book.exception"));
+            System.out.println(messages.get("book.exception"));
             return false;
         }
     }

@@ -1,14 +1,24 @@
 package command;
 
-public class DisplayAllBooks implements Command {
-    private final CommandsContext commandsContext;
+import org.springframework.stereotype.Component;
+import service.BookService;
 
-    public DisplayAllBooks(CommandsContext commandsContext) {
-        this.commandsContext = commandsContext;
+
+@Component
+public class DisplayAllBooks implements Command {
+    private final BookService bookService;
+
+    public DisplayAllBooks(BookService bookService) {
+        this.bookService = bookService;
     }
 
     @Override
     public void execute() {
-        commandsContext.bookService().readAllBooks().forEach(System.out::println);
+        bookService.readAllBooks().forEach(System.out::println);
+    }
+
+    @Override
+    public int id() {
+        return 1;
     }
 }
