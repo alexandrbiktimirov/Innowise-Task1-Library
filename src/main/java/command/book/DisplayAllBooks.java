@@ -18,7 +18,7 @@ public class DisplayAllBooks implements Command {
     @Override
     public void execute() {
         if (bookService.getAllBooks().isEmpty()) {
-            System.out.println(messages.get("start.empty.option"));
+            System.out.println(messages.get("book.empty"));
         }
 
         bookService.getAllBooks().forEach(System.out::println);

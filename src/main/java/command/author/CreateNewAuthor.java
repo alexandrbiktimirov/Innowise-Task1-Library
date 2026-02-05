@@ -21,6 +21,25 @@ public class CreateNewAuthor implements Command {
 
     @Override
     public void execute() {
+        while (true) {
+            System.out.println(messages.get("author.update.firstName"));
+            String firstName = scanner.nextLine().trim();
 
+            if (firstName.isEmpty()) {
+                System.out.println(messages.get("author.firstName.empty"));
+                continue;
+            }
+
+            System.out.println(messages.get("author.update.lastName"));
+            String lastName = scanner.nextLine().trim();
+
+            if (lastName.isEmpty()) {
+                System.out.println(messages.get("author.lastName.empty"));
+                continue;
+            }
+
+            authorService.createAuthor(firstName, lastName);
+            break;
+        }
     }
 }

@@ -1,7 +1,6 @@
 package command.author;
 
 import command.Command;
-import command.QuitProgram;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.AuthorService;

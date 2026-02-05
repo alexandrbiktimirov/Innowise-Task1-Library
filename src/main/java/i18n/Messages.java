@@ -22,7 +22,7 @@ public class Messages {
         try {
             return OptionalInt.of(Integer.parseInt(text));
         } catch (NumberFormatException e) {
-            System.out.println(get("invalid.id"));
+            System.out.println(get("common.invalid.format"));
             return OptionalInt.empty();
         }
     }
@@ -31,7 +31,7 @@ public class Messages {
         try {
             return OptionalLong.of(Long.parseLong(text));
         } catch (NumberFormatException e) {
-            System.out.println(get("invalid.id"));
+            System.out.println(get("common.invalid.format"));
             return OptionalLong.empty();
         }
     }

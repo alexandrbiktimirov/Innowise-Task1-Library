@@ -29,16 +29,17 @@ public class AppController {
 
     public void showMenu() {
         while (true) {
-            System.out.println(messages.get("start.select"));
-            System.out.println(messages.get("start.book"));
-            System.out.println(messages.get("start.author"));
-            System.out.println(messages.get("start.genre"));
-            System.out.println(messages.get("start.quit"));
+            System.out.println(messages.get("app.menu.select"));
+
+            System.out.println(messages.get("app.menu.book"));
+            System.out.println(messages.get("app.menu.author"));
+            System.out.println(messages.get("app.menu.genre"));
+            System.out.println(messages.get("app.menu.quit"));
 
             OptionalInt option = messages.parseIntOrPrint(scanner.nextLine().trim());
 
             if (option.isEmpty()) {
-                System.out.println(messages.get("start.invlaid"));
+                System.out.println(messages.get("common.invalid.number"));
                 continue;
             }
 
@@ -47,7 +48,7 @@ public class AppController {
                 case 2 -> authorController.showMenu();
                 case 3 -> genreController.showMenu();
                 case 4 -> quitProgram.execute();
-                default -> messages.get("start.invalid.option");
+                default -> System.out.println(messages.get("app.menu.invalid"));
             }
         }
     }

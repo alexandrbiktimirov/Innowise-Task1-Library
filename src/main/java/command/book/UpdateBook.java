@@ -31,7 +31,7 @@ public class UpdateBook implements Command {
         while (true) {
             bookService.getAllBooks().forEach(System.out::println);
 
-            System.out.println(messages.get("update.id"));
+            System.out.println(messages.get("book.update.id"));
 
             String inputId = scanner.nextLine().trim();
             OptionalLong id = messages.parseLongOrPrint(inputId);
@@ -40,23 +40,23 @@ public class UpdateBook implements Command {
                 continue;
             }
 
-            System.out.println(messages.get("update.book.title"));
+            System.out.println(messages.get("book.update.title"));
             String title = scanner.nextLine().trim();
 
             if (title.isEmpty()){
-                System.out.println(messages.get("update.invalid.title"));
+                System.out.println(messages.get("book.update.title.invalid"));
                 continue;
             }
 
-            System.out.println(messages.get("update.book.description"));
+            System.out.println(messages.get("book.update.description"));
             String description = scanner.nextLine().trim();
 
             if (description.isEmpty()){
-                System.out.println(messages.get("update.invalid.description"));
+                System.out.println(messages.get("book.update.description.invalid"));
                 continue;
             }
 
-            System.out.println(messages.get("update.book.author"));
+            System.out.println(messages.get("book.update.author"));
             String author = scanner.nextLine().trim();
             OptionalLong authorId = messages.parseLongOrPrint(author);
 
@@ -65,7 +65,7 @@ public class UpdateBook implements Command {
                 continue;
             }
 
-            System.out.println(messages.get("update.book.genre"));
+            System.out.println(messages.get("book.update.genre"));
             String genre = scanner.nextLine().trim();
             OptionalLong genreId = messages.parseLongOrPrint(genre);
 

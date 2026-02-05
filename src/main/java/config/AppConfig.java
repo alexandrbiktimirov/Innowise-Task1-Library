@@ -8,10 +8,10 @@ import controller.BookController;
 import controller.GenreController;
 import i18n.LocaleHolder;
 import i18n.Messages;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import repository.AuthorDao;
 import repository.BookDao;
@@ -25,7 +25,6 @@ import java.util.Scanner;
 
 @Configuration
 @Import({AopConfig.class, CommandsConfig.class, I18nConfig.class, JdbcConfig.class})
-@PropertySource("classpath:application.properties")
 public class AppConfig {
 
     @Bean
@@ -49,17 +48,17 @@ public class AppConfig {
     }
 
     @Bean
-    public AuthorController authorController(Scanner scanner, Messages messages, Map<Integer, Command> authorCommands) {
+    public AuthorController authorController(Scanner scanner, Messages messages, @Qualifier("authorCommands") Map<Integer, Command> authorCommands) {
         return new AuthorController(scanner, messages, authorCommands);
     }
 
     @Bean
-    public BookController bookController(Scanner scanner, Messages messages, Map<Integer, Command> bookCommands) {
+    public BookController bookController(Scanner scanner, Messages messages, @Qualifier("bookCommands") Map<Integer, Command> bookCommands) {
         return new BookController(scanner, messages, bookCommands);
     }
 
     @Bean
-    public GenreController genreController(Scanner scanner, Messages messages, Map<Integer, Command> genreCommands) {
+    public GenreController genreController(Scanner scanner, Messages messages, @Qualifier("genreCommands") Map<Integer, Command> genreCommands) {
         return new GenreController(scanner, messages, genreCommands);
     }
 

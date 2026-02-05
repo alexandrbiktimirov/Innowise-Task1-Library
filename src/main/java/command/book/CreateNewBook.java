@@ -29,38 +29,38 @@ public class CreateNewBook implements Command {
     @Override
     public void execute() {
         while (true) {
-            System.out.println(messages.get("create.book.title"));
+            System.out.println(messages.get("book.create.title"));
             String title = scanner.nextLine().trim();
 
             if (title.isEmpty()){
-                System.out.println(messages.get("create.invalid.title"));
+                System.out.println(messages.get("book.create.title.invalid"));
                 continue;
             }
 
-            System.out.println(messages.get("create.book.description"));
+            System.out.println(messages.get("book.create.description"));
             String description = scanner.nextLine().trim();
 
             if (description.isEmpty()){
-                System.out.println(messages.get("create.invalid.description"));
+                System.out.println(messages.get("book.create.description.invalid"));
                 continue;
             }
 
-            System.out.println(messages.get("create.book.author"));
+            System.out.println(messages.get("book.create.author"));
             String author = scanner.nextLine().trim();
             OptionalLong authorId = messages.parseLongOrPrint(author);
 
             if (authorId.isEmpty() || authorService.getAuthorById(authorId.getAsLong()) == null){
                 System.out.println(messages.get("author.notfound"));
-                continue;
+                break;
             }
 
-            System.out.println(messages.get("create.book.genre"));
+            System.out.println(messages.get("book.create.genre"));
             String genre = scanner.nextLine().trim();
             OptionalLong genreId = messages.parseLongOrPrint(genre);
 
             if (genreId.isEmpty() || genreService.getGenreById(genreId.getAsLong()) == null){
                 System.out.println(messages.get("genre.notfound"));
-                continue;
+                break;
             }
 
             bookService.createBook(title, description, authorId.getAsLong(), genreId.getAsLong());

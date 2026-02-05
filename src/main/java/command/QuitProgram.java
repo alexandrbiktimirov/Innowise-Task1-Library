@@ -13,7 +13,7 @@ public class QuitProgram implements Command {
 
     @Override
     public void execute() {
-        System.out.println(messages.get("quitting"));
+        System.out.println(messages.get("app.quitting"));
         System.exit(0);
     }
 }
