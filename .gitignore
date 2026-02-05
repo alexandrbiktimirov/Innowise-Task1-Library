@@ -1,3 +1,6 @@
+# Custom
+csv/books.csv
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

@@ -1,175 +1,67 @@
 package controller;
 
-import main.Main;
-import org.springframework.stereotype.Component;
-import service.BookService;
+import command.*;
+import i18n.LocaleHolder;
+import i18n.Messages;
 
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
 
-@Component
 public class BookController {
-    private final BookService bookService;
-    private ResourceBundle messages;
-    private final Scanner scanner = new Scanner(System.in);
+    private final Map<Integer, Command> commands;
+    private final Scanner scanner;
+    private final Messages messages;
+    private final LocaleHolder localeHolder;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
+    public BookController(Map<Integer, Command> commands, Scanner scanner, Messages messages, LocaleHolder localeHolder) {
+        this.commands = commands;
+        this.scanner = scanner;
+        this.messages = messages;
+        this.localeHolder = localeHolder;
     }
 
-    public void showMenu() {
-        boolean running = true;
-        messages = Main.getMessages();
+    public void start() {
+        chooseLanguage();
 
-        while (running) {
-            System.out.println(messages.getString("book.menu.select"));
-            System.out.println(messages.getString("book.menu.create"));
-            System.out.println(messages.getString("book.menu.read"));
-            System.out.println(messages.getString("book.menu.update"));
-            System.out.println(messages.getString("book.menu.delete"));
-            System.out.println(messages.getString("book.menu.quit"));
+        while (true) {
+            System.out.println(messages.get("start.select"));
+            System.out.println(messages.get("start.display"));
+            System.out.println(messages.get("start.create"));
+            System.out.println(messages.get("start.update"));
+            System.out.println(messages.get("start.delete"));
+            System.out.println(messages.get("start.quit"));
 
-            String choice = scanner.nextLine().trim();
+            OptionalInt opt = messages.parseIntOrPrint(scanner.nextLine().trim());
+            if (opt.isEmpty()) continue;
 
-            try {
-                int choiceInt = Integer.parseInt(choice);
-
-                switch (choiceInt) {
-                    case 1 -> createBook();
-                    case 2 -> readBooks();
-                    case 3 -> updateBook();
-                    case 4 -> deleteBook();
-                    case 5 -> running = false;
-                    default -> System.out.println(messages.getString("book.menu.invalid.option"));
-                }
-            } catch (NumberFormatException e) {
-                System.out.println(messages.getString("book.menu.invalid.option"));
+            Command cmd = commands.get(opt.getAsInt());
+            if (cmd == null) {
+                System.out.println(messages.get("start.invalid.option"));
+                continue;
             }
+
+            cmd.execute();
         }
     }
 
-    public void createBook() {
-        boolean running = true;
-        while (running) {
-            System.out.println(messages.getString("book.create.title"));
-            String title = scanner.nextLine().trim();
-            if (title.isEmpty()) {
-                System.out.println(messages.getString("book.create.invalid.title"));
-                continue;
-            }
+    private void chooseLanguage() {
+        while (true) {
+            System.out.println("Please select the language / Poproszę wybrać język:");
+            System.out.println("1. English");
+            System.out.println("2. Polski");
 
-            System.out.println(messages.getString("book.create.authorId"));
-            String authorIdStr = scanner.nextLine().trim();
-            long authorId;
             try {
-                authorId = Long.parseLong(authorIdStr);
-                if (authorId <= 0) throw new NumberFormatException();
-            } catch (NumberFormatException e) {
-                System.out.println(messages.getString("book.create.invalid.authorId"));
-                continue;
-            }
+                int id = Integer.parseInt(scanner.nextLine().trim());
+                Locale locale = switch (id) {
+                    case 1 -> Locale.ENGLISH;
+                    case 2 -> new Locale("pl");
+                    default -> throw new IllegalArgumentException();
+                };
 
-            System.out.println(messages.getString("book.create.description"));
-            String description = scanner.nextLine().trim();
-            if (description.isEmpty()) {
-                System.out.println(messages.getString("book.create.invalid.description"));
-                continue;
-            }
-
-            System.out.println(messages.getString("book.create.genreId"));
-            String genreIdStr = scanner.nextLine().trim();
-            long genreId;
-            try {
-                genreId = Long.parseLong(genreIdStr);
-                if (genreId <= 0) throw new NumberFormatException();
-            } catch (NumberFormatException e) {
-                System.out.println(messages.getString("book.create.invalid.genreId"));
-                continue;
-            }
-
-            bookService.createBook(title, authorId, description, genreId);
-            running = false;
-        }
-    }
-
-    public void readBooks() {
-        if (bookService.getAllBooks().isEmpty()) {
-            System.out.println(messages.getString("book.read.noBooks"));
-        }
-        bookService.getAllBooks().forEach(System.out::println);
-    }
-
-    public void updateBook() {
-        readBooks();
-        boolean running = true;
-
-        while (running) {
-            System.out.println(messages.getString("book.update.select"));
-            String idStr = scanner.nextLine().trim();
-            long id;
-            try {
-                id = Long.parseLong(idStr);
-                if (bookService.getBookById(id) == null) {
-                    throw new IllegalArgumentException();
-                }
+                localeHolder.setLocale(locale);
+                break;
             } catch (Exception e) {
-                System.out.println(messages.getString("book.update.invalid"));
-                continue;
+                System.out.println("Invalid input, please try again / Niepoprawna opcja, poproszę powtórzyć");
             }
-
-            System.out.println(messages.getString("book.update.title"));
-            String title = scanner.nextLine().trim();
-            if (title.isEmpty()) {
-                System.out.println(messages.getString("book.update.invalid.title"));
-                continue;
-            }
-
-            System.out.println(messages.getString("book.update.authorId"));
-            String authorIdStr = scanner.nextLine().trim();
-            long authorId;
-            try {
-                authorId = Long.parseLong(authorIdStr);
-                if (authorId <= 0) throw new NumberFormatException();
-            } catch (NumberFormatException e) {
-                System.out.println(messages.getString("book.update.invalid.authorId"));
-                continue;
-            }
-
-            System.out.println(messages.getString("book.update.description"));
-            String description = scanner.nextLine().trim();
-            if (description.isEmpty()) {
-                System.out.println(messages.getString("book.update.invalid.description"));
-                continue;
-            }
-
-            System.out.println(messages.getString("book.update.genreId"));
-            String genreIdStr = scanner.nextLine().trim();
-            long genreId;
-            try {
-                genreId = Long.parseLong(genreIdStr);
-                if (genreId <= 0) throw new NumberFormatException();
-            } catch (NumberFormatException e) {
-                System.out.println(messages.getString("book.update.invalid.genreId"));
-                continue;
-            }
-
-            bookService.updateBook(id, title, authorId, description, genreId);
-            running = false;
-        }
-    }
-
-    public void deleteBook() {
-        readBooks();
-
-        System.out.println(messages.getString("book.delete.select"));
-        String idStr = scanner.nextLine().trim();
-
-        try {
-            long id = Long.parseLong(idStr);
-            bookService.deleteBook(id);
-            System.out.println(messages.getString("book.delete.successful"));
-        } catch (Exception e) {
-            System.out.println(messages.getString("book.delete.invalid"));
         }
     }
 }
