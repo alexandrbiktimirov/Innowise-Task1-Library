@@ -3,19 +3,19 @@ package model;
 public class Book {
     private Long id;
     private String title;
-    private long authorId;
     private String description;
+    private long authorId;
     private long genreId;
 
-    public Book(String title, long author, String description, long genre) {
+    public Book() {
+
+    }
+
+    public Book(String title, String description, long author, long genre) {
         this.title = title;
         this.authorId = author;
         this.description = description;
         this.genreId = genre;
-    }
-
-    public Book() {
-
     }
 
     public Long getId() {

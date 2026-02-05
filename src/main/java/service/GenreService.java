@@ -1,21 +1,53 @@
 package service;
 
+import aop.Cached;
 import model.Genre;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import repository.GenreDao;
+
 import java.util.List;
 
-public interface GenreService {
+@Service
+public class GenreService {
 
-    List<Genre> getAllGenres();
+    private final GenreDao genreDao;
 
-    Genre getGenreById(Long id);
+    public GenreService(GenreDao genreDao) {
+        this.genreDao = genreDao;
+    }
+
+    public List<Genre> getAllGenres() {
+        return genreDao.findAll();
+    }
+
+    @Cached
+    public Genre getGenreById(Long id) {
+        try {
+            return genreDao.findById(id);
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
+    }
 
     @Transactional
-    void createGenre(String name);
+    public void createGenre(String name) {
+        Genre genre = new Genre(name);
+
+        genreDao.create(genre);
+    }
 
     @Transactional
-    void updateGenre(long id, String name);
+    public void updateGenre(long id, String name) {
+        Genre genre = getGenreById(id);
+        genre.setName(name);
+
+        genreDao.update(genre);
+    }
 
     @Transactional
-    void deleteGenre(Long id);
+    public void deleteGenre(Long id) {
+        genreDao.delete(id);
+    }
 }

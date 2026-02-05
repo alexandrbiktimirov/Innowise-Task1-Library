@@ -1,22 +1,50 @@
 package service;
 
+import aop.Cached;
 import model.Author;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
+import repository.AuthorDao;
 
 import java.util.List;
 
-public interface AuthorService {
+public class AuthorService {
+    private final AuthorDao authorDao;
 
-    List<Author> getAllAuthors();
+    public AuthorService(AuthorDao authorDao) {
+        this.authorDao = authorDao;
+    }
 
-    Author getAuthorById(long id);
+    public List<Author> getAllAuthors() {
+        return authorDao.findAll();
+    }
+
+    @Cached
+    public Author getAuthorById(long id) {
+        try {
+            return authorDao.findById(id);
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
+    }
 
     @Transactional
-    void createAuthor(String firstName, String lastName);
+    public void createAuthor(String firstName, String lastName) {
+        Author author = new Author(firstName, lastName);
+        authorDao.create(author);
+    }
 
     @Transactional
-    void updateAuthor(long id, String firstName, String lastName);
+    public void updateAuthor(long id, String firstName, String lastName) {
+        Author author = getAuthorById(id);
+        author.setFirstName(firstName);
+        author.setLastName(lastName);
+
+        authorDao.update(author);
+    }
 
     @Transactional
-    void deleteAuthor(int id);
+    public void deleteAuthor(int id) {
+        authorDao.delete(id);
+    }
 }

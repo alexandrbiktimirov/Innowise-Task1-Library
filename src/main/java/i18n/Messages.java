@@ -3,6 +3,7 @@ package i18n;
 import org.springframework.context.MessageSource;
 
 import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 public class Messages {
     private final MessageSource messageSource;
@@ -23,6 +24,15 @@ public class Messages {
         } catch (NumberFormatException e) {
             System.out.println(get("invalid.id"));
             return OptionalInt.empty();
+        }
+    }
+
+    public OptionalLong parseLongOrPrint(String text) {
+        try {
+            return OptionalLong.of(Long.parseLong(text));
+        } catch (NumberFormatException e) {
+            System.out.println(get("invalid.id"));
+            return OptionalLong.empty();
         }
     }
 }

@@ -1,117 +1,55 @@
 package service;
 
 import aop.Cached;
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import exception.BookDoesNotExistException;
-import exception.LoadFromFileFailureException;
-import exception.WriteChangesToFileFailureException;
-import jakarta.annotation.PostConstruct;
 import model.Book;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.transaction.annotation.Transactional;
+import repository.BookDao;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookService {
-    private final List<Book> books = new ArrayList<>();
-    private final List<Book> initialBooks = new ArrayList<>();
 
-    @Value("${file}")
-    private String filePath;
+    private final BookDao bookDao;
 
-    @PostConstruct
-    private void loadFromFile() {
-        File csvFile = new File(filePath);
+    public BookService(BookDao bookDao) {
+        this.bookDao = bookDao;
+    }
 
-        CsvMapper mapper = new CsvMapper();
-        CsvSchema schema = mapper
-                .schemaFor(Book.class)
-                .withHeader()
-                .withColumnSeparator(',');
-
-        try (MappingIterator<Book> iterator = mapper.readerFor(Book.class).with(schema).readValues(csvFile)) {
-            while (iterator.hasNext()) {
-                Book book = iterator.next();
-                books.add(book);
-                initialBooks.add(book);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new LoadFromFileFailureException("Could not load books from file");
-        }
+    public List<Book> getAllBooks() {
+        return bookDao.findAll();
     }
 
     @Cached
-    public Book getBookById(int id) throws BookDoesNotExistException {
-        return books.stream()
-                .filter(book -> book.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new BookDoesNotExistException("Book with id " + id + " does not exist"));
-    }
-
-    public List<Book> readAllBooks() {
-        return books;
-    }
-
-    public void createBook(String title, String author, String description) {
-        int id = books.isEmpty() ? 1 : books.getLast().getId() + 1;
-
-        books.add(new Book(id, title, author, description));
-    }
-
-    public void updateBookTitle(int id, String newTitle) throws BookDoesNotExistException {
-        Book book = getBookById(id);
-        book.setTitle(newTitle);
-    }
-
-    public void updateBookAuthor(int id, String newAuthor) throws BookDoesNotExistException {
-        Book book = getBookById(id);
-        book.setAuthor(newAuthor);
-    }
-
-    public void updateBookDescription(int id, String newDescription) throws BookDoesNotExistException {
-        Book book = getBookById(id);
-        book.setDescription(newDescription);
-    }
-
-    public void updateBook(int id, String newTitle, String newAuthor, String newDescription) throws BookDoesNotExistException {
-        Book book = getBookById(id);
-        book.setTitle(newTitle);
-        book.setAuthor(newAuthor);
-        book.setDescription(newDescription);
-    }
-
-    public void deleteBook(int id) throws BookDoesNotExistException {
-        Book book = getBookById(id);
-        books.remove(book);
-    }
-
-    public void writeChangesToFile() {
-        if (books.equals(initialBooks)) {
-            return;
-        }
-
-        File csvFile = new File("csv/books.csv");
-        CsvMapper mapper = new CsvMapper();
-
-        CsvSchema schema = mapper
-                .schemaFor(Book.class)
-                .withHeader()
-                .withColumnSeparator(',');
-
+    public Book getBookById(Long id) {
         try {
-            mapper.writerFor(
-                            mapper.getTypeFactory().constructParametricType(java.util.List.class, Book.class)
-                    )
-                    .with(schema)
-                    .writeValue(csvFile, books);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new WriteChangesToFileFailureException("Could not write books to file");
+            return bookDao.findById(id);
+        } catch (EmptyResultDataAccessException e){
+            return null;
         }
+    }
+
+    @Transactional
+    public void createBook(String title, String description, long authorId, long genreId) {
+        Book book = new Book(title, description, authorId, genreId);
+
+        bookDao.create(book);
+    }
+
+    @Transactional
+    public void updateBook(long id, String title, String description, long genreId, long authorId) {
+        Book book = getBookById(id);
+
+        book.setTitle(title);
+        book.setAuthorId(authorId);
+        book.setDescription(description);
+        book.setGenreId(genreId);
+
+        bookDao.update(book);
+    }
+
+    @Transactional
+    public void deleteBook(Long id) {
+        bookDao.delete(id);
     }
 }
