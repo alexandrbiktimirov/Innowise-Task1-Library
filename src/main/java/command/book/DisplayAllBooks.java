@@ -17,10 +17,12 @@ public class DisplayAllBooks implements Command {
 
     @Override
     public void execute() {
-        if (bookService.getAllBooks().isEmpty()) {
+        var books = bookService.getAllBooks();
+
+        if (books.isEmpty()) {
             System.out.println(messages.get("book.empty"));
         }
 
-        bookService.getAllBooks().forEach(System.out::println);
+        books.forEach(System.out::println);
     }
 }

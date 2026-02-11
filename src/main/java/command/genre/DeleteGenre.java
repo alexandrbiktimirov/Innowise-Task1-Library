@@ -1,6 +1,7 @@
 package command.genre;
 
 import command.Command;
+import exception.GenreDoesNotExistException;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.GenreService;
@@ -28,12 +29,16 @@ public class DeleteGenre implements Command {
         String inputId = scanner.nextLine().trim();
         OptionalLong id = messages.parseLongOrPrint(inputId);
 
-        if (id.isEmpty() || genreService.getGenreById(id.getAsLong()) == null) {
+        if (id.isEmpty()) {
             System.out.println(messages.get("genre.notfound"));
             return;
         }
 
-        genreService.deleteGenre(id.getAsLong());
-        System.out.println(messages.get("genre.delete.successful"));
+        try {
+            genreService.deleteGenre(id.getAsLong());
+            System.out.println(messages.get("genre.delete.successful"));
+        } catch (GenreDoesNotExistException e) {
+            System.out.println(messages.get("genre.notfound"));
+        }
     }
 }

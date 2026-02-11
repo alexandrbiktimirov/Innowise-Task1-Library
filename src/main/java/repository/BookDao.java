@@ -33,20 +33,13 @@ public class BookDao {
     }
 
     public void delete(long id) {
-        session().remove(id);
+        Book book = findById(id);
+        if (book != null) {
+            session().remove(book);
+        }
     }
     
     private Session session(){
         return sessionFactory.getCurrentSession();
     }
-    
-//    public List<Book> findByBookId(Long BookId) {
-//        String sql = "SELECT * FROM book WHERE Book_id = ? ORDER BY title";
-//        return jdbcTemplate.query(sql, rowMapper, BookId);
-//    }
-//
-//    public List<Book> findByGenreId(Long genreId) {
-//        String sql = "SELECT * FROM book WHERE genre_id = ? ORDER BY title";
-//        return jdbcTemplate.query(sql, rowMapper, genreId);
-//    }
 }

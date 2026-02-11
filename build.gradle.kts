@@ -11,6 +11,8 @@ repositories {
 
 val spring = "6.2.7"
 val junitBom = "5.10.2"
+val mapstruct = "1.5.5.Final"
+val lombok = "1.18.32"
 
 dependencies {
     implementation("org.springframework:spring-context:$spring")
@@ -25,6 +27,12 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.16")
     runtimeOnly("ch.qos.logback:logback-classic:1.5.13")
     implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
+    implementation("org.mapstruct:mapstruct:$mapstruct")
+    compileOnly("org.projectlombok:lombok:$lombok")
+    annotationProcessor("org.projectlombok:lombok:$lombok")
+    annotationProcessor("org.mapstruct:mapstruct-processor:$mapstruct")
+    testCompileOnly("org.projectlombok:lombok:$lombok")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombok")
     testImplementation(platform("org.junit:junit-bom:$junitBom"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

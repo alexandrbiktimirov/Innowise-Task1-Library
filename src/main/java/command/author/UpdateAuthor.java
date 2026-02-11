@@ -1,6 +1,7 @@
 package command.author;
 
 import command.Command;
+import exception.AuthorDoesNotExistException;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.AuthorService;
@@ -34,7 +35,14 @@ public class UpdateAuthor implements Command {
             System.out.println(messages.get("author.update.id"));
 
             OptionalLong id = messages.parseLongOrPrint(scanner.nextLine().trim());
-            if (id.isEmpty() || authorService.getAuthorById(id.getAsLong()) == null) {
+            if (id.isEmpty()) {
+                System.out.println(messages.get("author.notfound"));
+                break;
+            }
+
+            try {
+                authorService.getAuthorById(id.getAsLong());
+            } catch (AuthorDoesNotExistException e) {
                 System.out.println(messages.get("author.notfound"));
                 break;
             }
@@ -55,7 +63,12 @@ public class UpdateAuthor implements Command {
                 continue;
             }
 
-            authorService.updateAuthor(id.getAsLong(), firstName, lastName);
+            try {
+                authorService.updateAuthor(id.getAsLong(), firstName, lastName);
+            } catch (AuthorDoesNotExistException e) {
+                System.out.println(messages.get("author.notfound"));
+                continue;
+            }
             break;
         }
     }

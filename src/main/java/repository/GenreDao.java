@@ -30,8 +30,6 @@ public class GenreDao {
         cq.select(genre);
 
         return session().createQuery(cq).getResultList();
-
-        //return session().createQuery("from Genre", Genre.class).list();
     }
 
     public void create(Genre Genre) {
@@ -43,7 +41,10 @@ public class GenreDao {
     }
 
     public void delete(long id) {
-        session().remove(id);
+        Genre genre = findById(id);
+        if (genre != null) {
+            session().remove(genre);
+        }
     }
 
     private Session session(){

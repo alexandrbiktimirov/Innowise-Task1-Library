@@ -1,6 +1,7 @@
 package command.genre;
 
 import command.Command;
+import exception.GenreDoesNotExistException;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.GenreService;
@@ -33,7 +34,14 @@ public class UpdateGenre implements Command {
             System.out.println(messages.get("genre.update.id"));
 
             OptionalLong id = messages.parseLongOrPrint(scanner.nextLine().trim());
-            if (id.isEmpty() || genreService.getGenreById(id.getAsLong()) == null) {
+            if (id.isEmpty()) {
+                System.out.println(messages.get("genre.notfound"));
+                continue;
+            }
+
+            try {
+                genreService.getGenreById(id.getAsLong());
+            } catch (GenreDoesNotExistException e) {
                 System.out.println(messages.get("genre.notfound"));
                 continue;
             }
@@ -46,7 +54,12 @@ public class UpdateGenre implements Command {
                 continue;
             }
 
-            genreService.updateGenre(id.getAsLong(), name);
+            try {
+                genreService.updateGenre(id.getAsLong(), name);
+            } catch (GenreDoesNotExistException e) {
+                System.out.println(messages.get("genre.notfound"));
+                continue;
+            }
             break;
         }
     }

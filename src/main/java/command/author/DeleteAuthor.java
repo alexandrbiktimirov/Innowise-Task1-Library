@@ -1,6 +1,7 @@
 package command.author;
 
 import command.Command;
+import exception.AuthorDoesNotExistException;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.AuthorService;
@@ -28,9 +29,11 @@ public class DeleteAuthor implements Command {
         String choice = scanner.nextLine().trim();
 
         try {
-            int choiceInt = Integer.parseInt(choice);
+            long choiceInt = Long.parseLong(choice);
             authorService.deleteAuthor(choiceInt);
             System.out.println(messages.get("author.delete.successful"));
+        } catch(AuthorDoesNotExistException e) {
+            System.out.println(messages.get("author.notfound"));
         } catch(Exception e) {
             System.out.println(messages.get("author.delete.invalid"));
         }

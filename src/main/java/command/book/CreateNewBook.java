@@ -1,14 +1,17 @@
 package command.book;
 
 import command.Command;
+import exception.AuthorDoesNotExistException;
+import exception.GenreDoesNotExistException;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.AuthorService;
 import service.BookService;
 import service.GenreService;
 
-import java.util.OptionalLong;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 
 @Component
 public class CreateNewBook implements Command {
@@ -47,24 +50,50 @@ public class CreateNewBook implements Command {
 
             System.out.println(messages.get("book.create.author"));
             String author = scanner.nextLine().trim();
-            OptionalLong authorId = messages.parseLongOrPrint(author);
+            Optional<Set<Long>> authorIds = messages.parseLongSetOrPrint(author);
 
-            if (authorId.isEmpty() || authorService.getAuthorById(authorId.getAsLong()) == null){
+            if (authorIds.isEmpty() || !authorsExist(authorIds.get())){
                 System.out.println(messages.get("author.notfound"));
                 break;
             }
 
             System.out.println(messages.get("book.create.genre"));
             String genre = scanner.nextLine().trim();
-            OptionalLong genreId = messages.parseLongOrPrint(genre);
+            Optional<Set<Long>> genreIds = messages.parseLongSetOrPrint(genre);
 
-            if (genreId.isEmpty() || genreService.getGenreById(genreId.getAsLong()) == null){
+            if (genreIds.isEmpty() || !genresExist(genreIds.get())){
                 System.out.println(messages.get("genre.notfound"));
                 break;
             }
 
-            bookService.createBook(title, description, authorId.getAsLong(), genreId.getAsLong());
+            try {
+                bookService.createBook(title, description, authorIds.get(), genreIds.get());
+            } catch (AuthorDoesNotExistException e) {
+                System.out.println(messages.get("author.notfound"));
+                continue;
+            } catch (GenreDoesNotExistException e) {
+                System.out.println(messages.get("genre.notfound"));
+                continue;
+            }
             break;
+        }
+    }
+
+    private boolean authorsExist(Set<Long> authorIds) {
+        try {
+            authorIds.forEach(authorService::getAuthorById);
+            return true;
+        } catch (AuthorDoesNotExistException e) {
+            return false;
+        }
+    }
+
+    private boolean genresExist(Set<Long> genreIds) {
+        try {
+            genreIds.forEach(genreService::getGenreById);
+            return true;
+        } catch (GenreDoesNotExistException e) {
+            return false;
         }
     }
 }

@@ -1,30 +1,38 @@
 package service;
 
-import aop.Cached;
+import dto.AuthorDto;
+import exception.AuthorDoesNotExistException;
+import mapper.LibraryMapper;
 import model.Author;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import repository.AuthorDao;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AuthorService {
     private final AuthorDao authorDao;
+    private final LibraryMapper libraryMapper;
 
-    public AuthorService(AuthorDao authorDao) {
+    public AuthorService(AuthorDao authorDao, LibraryMapper libraryMapper) {
         this.authorDao = authorDao;
+        this.libraryMapper = libraryMapper;
     }
 
-    public List<Author> getAllAuthors() {
-        return authorDao.findAll();
+    @Transactional(readOnly = true)
+    public List<AuthorDto> getAllAuthors() {
+        return libraryMapper.toAuthorDtos(authorDao.findAll());
     }
 
-    public Author getAuthorById(long id) {
-        try {
-            return authorDao.findById(id);
-        } catch (EmptyResultDataAccessException e){
-            return null;
+    @Transactional(readOnly = true)
+    public Optional<AuthorDto> getAuthorById(long id) {
+        Author author = authorDao.findById(id);
+
+        if (author == null) {
+            throw new AuthorDoesNotExistException(id);
         }
+
+        return Optional.of(libraryMapper.toAuthorDto(author));
     }
 
     @Transactional
@@ -35,7 +43,11 @@ public class AuthorService {
 
     @Transactional
     public void updateAuthor(long id, String firstName, String lastName) {
-        Author author = getAuthorById(id);
+        Author author = authorDao.findById(id);
+        if (author == null) {
+            throw new AuthorDoesNotExistException(id);
+        }
+
         author.setFirstName(firstName);
         author.setLastName(lastName);
 
@@ -43,7 +55,10 @@ public class AuthorService {
     }
 
     @Transactional
-    public void deleteAuthor(int id) {
+    public void deleteAuthor(long id) {
+        if (authorDao.findById(id) == null) {
+            throw new AuthorDoesNotExistException(id);
+        }
         authorDao.delete(id);
     }
 }
