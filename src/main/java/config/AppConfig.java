@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 @Configuration
-@Import({AopConfig.class, CommandsConfig.class, I18nConfig.class, JdbcConfig.class})
+@Import({AopConfig.class, CommandsConfig.class, I18nConfig.class, HibernateConfig.class})
 public class AppConfig {
 
     @Bean

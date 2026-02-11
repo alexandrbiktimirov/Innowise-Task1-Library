@@ -19,7 +19,6 @@ public class AuthorService {
         return authorDao.findAll();
     }
 
-    @Cached
     public Author getAuthorById(long id) {
         try {
             return authorDao.findById(id);
