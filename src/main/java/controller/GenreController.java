@@ -1,120 +1,44 @@
 package controller;
 
-import main.Main;
-import org.springframework.stereotype.Component;
-import service.GenreService;
+import command.Command;
+import i18n.Messages;
 
-import java.util.ResourceBundle;
+import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Scanner;
 
-@Component
 public class GenreController {
-    private final GenreService genreService;
-    private ResourceBundle messages;
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
+    private final Messages messages;
+    private final Map<Integer, Command> genreCommands;
 
-    public GenreController(GenreService genreService) {
-        this.genreService = genreService;
+    public GenreController(Scanner scanner, Messages messages, Map<Integer, Command> genreCommands) {
+        this.scanner = scanner;
+        this.messages = messages;
+        this.genreCommands = genreCommands;
     }
 
     public void showMenu() {
-        boolean running = true;
-        messages = Main.getMessages();
+        while (true) {
+            System.out.println(messages.get("genre.menu.display"));
+            System.out.println(messages.get("genre.menu.create"));
+            System.out.println(messages.get("genre.menu.update"));
+            System.out.println(messages.get("genre.menu.delete"));
+            System.out.println(messages.get("genre.menu.return"));
 
-        while (running) {
-            System.out.println(messages.getString("genre.menu.select"));
-            System.out.println(messages.getString("genre.menu.create"));
-            System.out.println(messages.getString("genre.menu.read"));
-            System.out.println(messages.getString("genre.menu.update"));
-            System.out.println(messages.getString("genre.menu.delete"));
-            System.out.println(messages.getString("genre.menu.quit"));
-
-            String choice = scanner.nextLine().trim();
-
-            try {
-                int choiceInt = Integer.parseInt(choice);
-
-                switch (choiceInt) {
-                    case 1 -> createGenre();
-                    case 2 -> readGenres();
-                    case 3 -> updateGenre();
-                    case 4 -> deleteGenre();
-                    case 5 -> running = false;
-                    default -> System.out.println(messages.getString("genre.menu.invalid.option"));
-                }
-            } catch (NumberFormatException e) {
-                System.out.println(messages.getString("genre.menu.invalid.option"));
-            }
-        }
-    }
-
-    public void createGenre() {
-        boolean running = true;
-
-        while (running) {
-            System.out.println(messages.getString("genre.create.name"));
-            String name = scanner.nextLine().trim();
-
-            if (name.isEmpty()) {
-                System.out.println(messages.getString("genre.create.invalid.name"));
+            OptionalInt choice = messages.parseIntOrPrint(scanner.nextLine().trim());
+            if (choice.isEmpty()) {
+                System.out.println(messages.get("genre.menu.invalid"));
                 continue;
             }
 
-            genreService.createGenre(name);
-            running = false;
-        }
-    }
-
-    public void readGenres() {
-        if (genreService.getAllGenres().isEmpty()) {
-            System.out.println(messages.getString("genre.read.noGenres"));
-        }
-        genreService.getAllGenres().forEach(System.out::println);
-    }
-
-    public void updateGenre() {
-        readGenres();
-        boolean running = true;
-
-        while (running) {
-            System.out.println(messages.getString("genre.update.select"));
-            String idStr = scanner.nextLine().trim();
-            long id;
-            try {
-                id = Long.parseLong(idStr);
-                if (genreService.getGenreById(id) == null) {
-                    throw new IllegalArgumentException();
-                }
-            } catch (Exception e) {
-                System.out.println(messages.getString("genre.update.invalid"));
+            Command cmd = genreCommands.get(choice.getAsInt());
+            if (cmd == null) {
+                System.out.println(messages.get("genre.menu.command.invalid"));
                 continue;
             }
 
-            System.out.println(messages.getString("genre.update.name"));
-            String name = scanner.nextLine().trim();
-
-            if (name.isEmpty()) {
-                System.out.println(messages.getString("genre.update.invalid.name"));
-                continue;
-            }
-
-            genreService.updateGenre(id, name);
-            running = false;
-        }
-    }
-
-    public void deleteGenre() {
-        readGenres();
-
-        System.out.println(messages.getString("genre.delete.select"));
-        String idStr = scanner.nextLine().trim();
-
-        try {
-            long id = Long.parseLong(idStr);
-            genreService.deleteGenre(id);
-            System.out.println(messages.getString("genre.delete.successful"));
-        } catch (Exception e) {
-            System.out.println(messages.getString("genre.delete.invalid"));
+            cmd.execute();
         }
     }
 }

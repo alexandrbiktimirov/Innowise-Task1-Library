@@ -1,40 +1,21 @@
 package model;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-@Entity
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "title", nullable = false)
     private String title;
-
-    @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
-    private Author author;
-
-    @Column(name = "description", nullable = false)
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "genre_id", nullable = false)
-    private Genre genre;
-
-    public Book(String title, Author author, Genre genre, String description) {
-        this.title = title;
-        this.author = author;
-        this.description = description;
-        this.genre = genre;
-    }
+    private long authorId;
+    private long genreId;
 
     public Book() {
 
+    }
+
+    public Book(String title, String description, long author, long genre) {
+        this.title = title;
+        this.authorId = author;
+        this.description = description;
+        this.genreId = genre;
     }
 
     public Long getId() {
@@ -53,12 +34,12 @@ public class Book {
         this.title = title;
     }
 
-    public Author getAuthor() {
-        return author;
+    public long getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setAuthorId(long authorId) {
+        this.authorId = authorId;
     }
 
     public String getDescription() {
@@ -69,16 +50,16 @@ public class Book {
         this.description = description;
     }
 
-    public Genre getGenre() {
-        return genre;
+    public long getGenreId() {
+        return genreId;
     }
 
-    public void setGenre(Genre genre) {
-        this.genre = genre;
+    public void setGenreId(long genreId) {
+        this.genreId = genreId;
     }
 
     @Override
     public String toString() {
-        return "Id: " + id + ", Title: " + title + ", Author id: " + author.getId() + ", Description: " + description + ". Genre: " + genre.getName();
+        return "Id: " + id + ", Title: " + title + ", Author id: " + authorId + ", Description: " + description + ". Genre id: " + genreId;
     }
 }
