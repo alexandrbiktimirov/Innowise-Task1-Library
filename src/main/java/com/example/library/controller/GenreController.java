@@ -3,8 +3,8 @@ package com.example.library.controller;
 import com.example.library.dto.genre.GenreCreateDto;
 import com.example.library.dto.genre.GenreDto;
 import com.example.library.dto.genre.GenreUpdateDto;
-import org.springframework.web.bind.annotation.*;
 import com.example.library.service.GenreService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

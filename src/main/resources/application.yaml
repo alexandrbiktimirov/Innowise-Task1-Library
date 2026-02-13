@@ -1,8 +1,10 @@
 spring:
+  config:
+    import: classpath:database.properties
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: appuser
-    password: apppass
+    url: ${database.url}
+    username: ${database.username}
+    password: ${database.password}
     driver-class-name: org.postgresql.Driver
 
   jpa:

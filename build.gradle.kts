@@ -12,6 +12,8 @@ repositories {
 }
 
 val junitBom = "5.10.2"
+val mapstruct = "1.5.5.Final"
+val lombok = "1.18.32"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -22,12 +24,23 @@ dependencies {
     implementation("org.aspectj:aspectjweaver:1.9.22.1")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
+    implementation("org.mapstruct:mapstruct:$mapstruct")
+
+    compileOnly("org.projectlombok:lombok:$lombok")
+
+    testCompileOnly("org.projectlombok:lombok:$lombok")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombok")
+
     testImplementation(platform("org.junit:junit-bom:$junitBom"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+    annotationProcessor("org.projectlombok:lombok:$lombok")
+    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+    annotationProcessor("org.mapstruct:mapstruct-processor:$mapstruct")
 }
 
 tasks.test {

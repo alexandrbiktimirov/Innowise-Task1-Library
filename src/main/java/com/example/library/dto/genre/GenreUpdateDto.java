@@ -1,9 +1,14 @@
 package com.example.library.dto.genre;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Positive;
+
+import java.util.Set;
 
 public record GenreUpdateDto(
-        @NotBlank
-        String name
+        @Nullable
+        String name,
+        @Nullable
+        Set<@Positive Long> bookIds
 ) {
 }

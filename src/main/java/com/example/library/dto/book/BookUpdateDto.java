@@ -1,17 +1,18 @@
 package com.example.library.dto.book;
 
-
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.annotation.Nullable;
+
+import java.util.Set;
 
 public record BookUpdateDto(
-        @NotBlank
+        @Nullable
         String title,
-        @Positive
-        long authorId,
-        @NotBlank
+        @Nullable
         String description,
-        @Positive
-        long genreId
+        @Nullable
+        Set<@Positive Long> authorIds,
+        @Nullable
+        Set<@Positive Long> genreIds
 ) {
 }
