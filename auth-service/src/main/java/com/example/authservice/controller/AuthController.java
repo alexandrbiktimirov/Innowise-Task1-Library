@@ -1,10 +1,10 @@
 package com.example.authservice.controller;
 
-import com.example.library.dto.user.LoginRequest;
-import com.example.library.dto.user.RegisterRequest;
-import com.example.library.model.User;
-import com.example.library.security.JwtService;
-import com.example.library.service.UserService;
+import com.example.authservice.dto.LoginRequest;
+import com.example.authservice.dto.RegisterRequest;
+import com.example.authservice.model.User;
+import com.example.authservice.security.JwtService;
+import com.example.authservice.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

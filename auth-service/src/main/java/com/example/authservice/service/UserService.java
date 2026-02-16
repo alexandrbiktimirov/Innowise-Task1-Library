@@ -1,10 +1,10 @@
 package com.example.authservice.service;
 
-import com.example.library.dto.user.RegisterRequest;
-import com.example.library.exception.UserAlreadyExistsException;
-import com.example.library.model.Role;
-import com.example.library.model.User;
-import com.example.library.repository.UserRepository;
+import com.example.authservice.dto.RegisterRequest;
+import com.example.authservice.exception.UserAlreadyExistsException;
+import com.example.authservice.model.Role;
+import com.example.authservice.model.User;
+import com.example.authservice.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,17 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
-    @Override
     public User registerUser(RegisterRequest userCreateDto) {
         if (userRepository.existsByUsername(userCreateDto.username())){
             throw new UserAlreadyExistsException("User with username: '" + userCreateDto.username() + "' already exists");
@@ -42,7 +41,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // Needed only for demonstration purposes
     @Transactional
-    @Override
     public User registerAdmin(RegisterRequest userCreateDto) {
         User user = new User();
 

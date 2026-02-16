@@ -1,24 +1,28 @@
 services:
-  postgres:
-    image: postgres:15
-    container_name: library-postgres
+  auth-db:
+    image: postgres:17-alpine
+    container_name: auth-db
     environment:
-      POSTGRES_DB: library
-      POSTGRES_USER: appuser
-      POSTGRES_PASSWORD: apppass
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_password
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - auth-db-data:/var/lib/postgresql/data
 
-  mongo:
-    image: mongo:7
-    container_name: library-mongo
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    depends_on:
+      - auth-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: auth_user
+      SPRING_DATASOURCE_PASSWORD: auth_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
+      - "8081:8081"
 
 volumes:
-  postgres_data:
-  mongo_data:
+  auth-db-data:
