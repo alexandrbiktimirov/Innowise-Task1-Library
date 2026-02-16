@@ -1,17 +1,7 @@
 plugins {
-    java
-    id("org.springframework.boot") version "4.0.2"
-    id("io.spring.dependency-management") version "1.1.7"
-}
-
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
-description = "genre-service"
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(24)
-    }
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.java)
 }
 
 repositories {
@@ -19,11 +9,29 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(libs.bundles.spring.boot.starter.implementation)
+
+    implementation(libs.mapstruct)
+    implementation(libs.postgresql)
+    implementation(libs.aspectjweaver)
+    implementation(libs.jakarta.annotation)
+    implementation(libs.jjwt.api)
+
+    runtimeOnly(libs.jjwt.impl)
+    runtimeOnly(libs.jjwt.jackson)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.testcontainers.all)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.spring.security.test)
+    testImplementation(libs.spring.boot.test)
+    testImplementation(libs.spring.testcontainers)
+    testRuntimeOnly(libs.junit.platform.launcher)
+
+    annotationProcessor(libs.spring.boot.configuration.processor)
+    annotationProcessor(libs.mapstruct.processor)
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
 }
