@@ -3,11 +3,15 @@ package controller;
 import command.QuitProgram;
 import i18n.LocaleHolder;
 import i18n.Messages;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 import java.util.OptionalInt;
 import java.util.Scanner;
 
+@Component
+@RequiredArgsConstructor
 public class AppController {
     private final AuthorController authorController;
     private final BookController bookController;
@@ -16,16 +20,6 @@ public class AppController {
     private final Messages messages;
     private final Scanner scanner;
     private final QuitProgram quitProgram;
-
-    public AppController(AuthorController authorController, BookController bookController, GenreController genreController, LocaleHolder localeHolder, Messages messages, Scanner scanner, QuitProgram quitProgram) {
-        this.authorController = authorController;
-        this.bookController = bookController;
-        this.genreController = genreController;
-        this.localeHolder = localeHolder;
-        this.messages = messages;
-        this.scanner = scanner;
-        this.quitProgram = quitProgram;
-    }
 
     public void showMenu() {
         while (true) {

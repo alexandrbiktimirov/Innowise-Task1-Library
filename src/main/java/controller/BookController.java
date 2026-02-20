@@ -1,22 +1,20 @@
 package controller;
 
-import command.Command;
+import command.book.BookCommand;
 import i18n.Messages;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Scanner;
 
+@Component
+@RequiredArgsConstructor
 public class BookController {
     private final Scanner scanner;
     private final Messages messages;
-    private final Map<Integer, Command> bookCommands;
-
-    public BookController(Scanner scanner, Messages messages, Map<Integer, Command> bookCommands) {
-        this.scanner = scanner;
-        this.messages = messages;
-        this.bookCommands = bookCommands;
-    }
+    private final Map<Integer, BookCommand> bookCommands;
 
     public void showMenu() {
         while (true) {
@@ -32,7 +30,7 @@ public class BookController {
                 continue;
             }
 
-            Command cmd = bookCommands.get(choice.getAsInt());
+            BookCommand cmd = bookCommands.get(choice.getAsInt());
             if (cmd == null) {
                 System.out.println(messages.get("book.menu.command.invalid"));
                 continue;

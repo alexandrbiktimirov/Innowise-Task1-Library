@@ -1,7 +1,7 @@
 package exception;
 
 public class AuthorDoesNotExistException extends RuntimeException {
-    public AuthorDoesNotExistException(Long id) {
-        super("Author with id %s does not exist".formatted(id));
+    public AuthorDoesNotExistException(String message) {
+        super(message);
     }
 }

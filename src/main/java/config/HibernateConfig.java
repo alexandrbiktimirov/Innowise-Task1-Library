@@ -1,7 +1,7 @@
 package config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -17,14 +17,10 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:database.properties")
-@ComponentScan(basePackages = "repository")
+@RequiredArgsConstructor
 public class HibernateConfig {
 
     private final Environment env;
-
-    public HibernateConfig(Environment env) {
-        this.env = env;
-    }
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -72,6 +68,7 @@ public class HibernateConfig {
     public HibernateTransactionManager transactionManager() {
         var transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory().getObject());
+
         return transactionManager;
     }
 }

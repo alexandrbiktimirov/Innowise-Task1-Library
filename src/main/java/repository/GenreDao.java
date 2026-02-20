@@ -3,12 +3,14 @@ package repository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import model.Author;
 import model.Genre;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @SuppressWarnings("resource")
@@ -30,6 +32,18 @@ public class GenreDao {
         cq.select(genre);
 
         return session().createQuery(cq).getResultList();
+    }
+
+    public long countGenres(Set<Long> ids) {
+        if (ids == null || ids.isEmpty()) return 0;
+
+        var cb = session().getCriteriaBuilder();
+        var cq = cb.createQuery(Long.class);
+        var root = cq.from(Author.class);
+
+        cq.select(cb.countDistinct(root.get("id"))).where(root.get("id").in(ids));
+
+        return session().createQuery(cq).getSingleResult();
     }
 
     public void create(Genre Genre) {

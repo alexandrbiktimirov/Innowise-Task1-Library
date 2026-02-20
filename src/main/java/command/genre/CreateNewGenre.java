@@ -1,6 +1,5 @@
 package command.genre;
 
-import command.Command;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.GenreService;
@@ -8,7 +7,7 @@ import service.GenreService;
 import java.util.Scanner;
 
 @Component
-public class CreateNewGenre implements Command {
+public class CreateNewGenre implements GenreCommand {
 
     private final GenreService genreService;
     private final Scanner scanner;

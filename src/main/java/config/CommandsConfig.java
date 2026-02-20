@@ -1,36 +1,25 @@
 package config;
 
-import command.Command;
 import command.ReturnToMainMenu;
-import command.author.CreateNewAuthor;
-import command.author.DeleteAuthor;
-import command.author.DisplayAllAuthors;
-import command.author.UpdateAuthor;
-import command.book.CreateNewBook;
-import command.book.DeleteBook;
-import command.book.DisplayAllBooks;
-import command.book.UpdateBook;
-import command.genre.CreateNewGenre;
-import command.genre.DeleteGenre;
-import command.genre.DisplayAllGenres;
-import command.genre.UpdateGenre;
+import command.author.*;
+import command.book.*;
+import command.genre.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 import java.util.Scanner;
 
 @Configuration
-@ComponentScan(basePackages = "command")
 public class CommandsConfig {
+
     @Bean
     public Scanner scanner(){
         return new Scanner(System.in);
     }
 
     @Bean
-    public Map<Integer, Command> bookCommands(DisplayAllBooks displayAllBooks, CreateNewBook createNewBook, UpdateBook updateBook, DeleteBook deleteBook, ReturnToMainMenu returnToMainMenu){
+    public Map<Integer, BookCommand> bookCommands(DisplayAllBooks displayAllBooks, CreateNewBook createNewBook, UpdateBook updateBook, DeleteBook deleteBook, ReturnToMainMenu returnToMainMenu){
         return Map.of(
                 1, displayAllBooks,
                 2, createNewBook,
@@ -41,7 +30,7 @@ public class CommandsConfig {
     }
 
     @Bean
-    public Map<Integer, Command> authorCommands(DisplayAllAuthors displayAllAuthors, CreateNewAuthor createNewAuthor, UpdateAuthor updateAuthor, DeleteAuthor deleteAuthor, ReturnToMainMenu returnToMainMenu){
+    public Map<Integer, AuthorCommand> authorCommands(DisplayAllAuthors displayAllAuthors, CreateNewAuthor createNewAuthor, UpdateAuthor updateAuthor, DeleteAuthor deleteAuthor, ReturnToMainMenu returnToMainMenu){
         return Map.of(
                 1, displayAllAuthors,
                 2, createNewAuthor,
@@ -52,7 +41,7 @@ public class CommandsConfig {
     }
 
     @Bean
-    public Map<Integer, Command> genreCommands(DisplayAllGenres displayAllGenres, CreateNewGenre createNewGenre, UpdateGenre updateGenre, DeleteGenre deleteGenre, ReturnToMainMenu returnToMainMenu){
+    public Map<Integer, GenreCommand> genreCommands(DisplayAllGenres displayAllGenres, CreateNewGenre createNewGenre, UpdateGenre updateGenre, DeleteGenre deleteGenre, ReturnToMainMenu returnToMainMenu){
         return Map.of(
                 1, displayAllGenres,
                 2, createNewGenre,

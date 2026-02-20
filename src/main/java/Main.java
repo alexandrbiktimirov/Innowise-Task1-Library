@@ -1,4 +1,3 @@
-import config.AppConfig;
 import controller.AppController;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

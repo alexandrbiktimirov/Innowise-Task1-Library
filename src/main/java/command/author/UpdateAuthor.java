@@ -1,8 +1,9 @@
 package command.author;
 
-import command.Command;
 import exception.AuthorDoesNotExistException;
+import exception.InvalidIdFormatException;
 import i18n.Messages;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import service.AuthorService;
 
@@ -10,66 +11,62 @@ import java.util.OptionalLong;
 import java.util.Scanner;
 
 @Component
-public class UpdateAuthor implements Command {
+@RequiredArgsConstructor
+public class UpdateAuthor implements AuthorCommand {
 
     private final AuthorService authorService;
     private final Scanner scanner;
     private final Messages messages;
 
-    public UpdateAuthor(AuthorService authorService, Scanner scanner, Messages messages) {
-        this.authorService = authorService;
-        this.scanner = scanner;
-        this.messages = messages;
-    }
-
     @Override
     public void execute() {
-        if (authorService.getAllAuthors().isEmpty()) {
+        var authorsList = authorService.getAllAuthors();
+
+        if (authorsList.isEmpty()) {
             System.out.println(messages.get("author.empty"));
             return;
         }
 
         while (true) {
-            authorService.getAllAuthors().forEach(System.out::println);
+            authorsList.forEach(System.out::println);
 
-            System.out.println(messages.get("author.update.id"));
+            var id = getChoiceId();
+            if (id == -1) break;
 
-            OptionalLong id = messages.parseLongOrPrint(scanner.nextLine().trim());
-            if (id.isEmpty()) {
-                System.out.println(messages.get("author.notfound"));
-                break;
-            }
+            String firstName = getName("author.update.firstName", "author.firstName.empty");
+            if (firstName.isEmpty()) continue;
 
-            try {
-                authorService.getAuthorById(id.getAsLong());
-            } catch (AuthorDoesNotExistException e) {
-                System.out.println(messages.get("author.notfound"));
-                break;
-            }
+            String lastName = getName("author.update.lastName", "author.lastName.empty");
+            if (lastName.isEmpty()) continue;
 
-            System.out.println(messages.get("author.update.firstName"));
-            String firstName = scanner.nextLine().trim();
-
-            if (firstName.isEmpty()) {
-                System.out.println(messages.get("author.firstName.empty"));
-                continue;
-            }
-
-            System.out.println(messages.get("author.update.lastName"));
-            String lastName = scanner.nextLine().trim();
-
-            if (lastName.isEmpty()) {
-                System.out.println(messages.get("author.lastName.empty"));
-                continue;
-            }
-
-            try {
-                authorService.updateAuthor(id.getAsLong(), firstName, lastName);
-            } catch (AuthorDoesNotExistException e) {
-                System.out.println(messages.get("author.notfound"));
-                continue;
-            }
+            authorService.updateAuthor(id, firstName, lastName);
             break;
         }
+    }
+
+    private String getName(String request, String exceptionKey){
+        System.out.println(messages.get(request));
+
+        String name = scanner.nextLine().trim();
+
+        if (name.isEmpty()) {
+            System.out.println(messages.get(exceptionKey));
+        }
+
+        return name;
+    }
+
+    private long getChoiceId(){
+        System.out.println(messages.get("author.update.id"));
+        OptionalLong id = messages.parseLongOrPrint(scanner.nextLine().trim());
+
+        try {
+            authorService.getAuthorById(id);
+        } catch (InvalidIdFormatException | AuthorDoesNotExistException e) {
+            System.out.println(e.getMessage());
+            return -1;
+        }
+
+        return id.getAsLong();
     }
 }

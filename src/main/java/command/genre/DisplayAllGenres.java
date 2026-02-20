@@ -1,12 +1,11 @@
 package command.genre;
 
-import command.Command;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.GenreService;
 
 @Component
-public class DisplayAllGenres implements Command {
+public class DisplayAllGenres implements GenreCommand {
     private final GenreService genreService;
     private final Messages messages;
 

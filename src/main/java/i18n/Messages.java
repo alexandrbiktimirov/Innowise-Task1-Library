@@ -1,6 +1,8 @@
 package i18n;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 
 import java.util.OptionalInt;
 import java.util.OptionalLong;
@@ -9,17 +11,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Component
+@RequiredArgsConstructor
 public class Messages {
     private final MessageSource messageSource;
     private final LocaleHolder localeHolder;
 
-    public Messages(MessageSource messageSource, LocaleHolder localeHolder) {
-        this.messageSource = messageSource;
-        this.localeHolder = localeHolder;
-    }
-
     public String get(String key) {
         return messageSource.getMessage(key, null, localeHolder.getLocale());
+    }
+
+    public String get(String key, Object... args) {
+        return messageSource.getMessage(key, args, localeHolder.getLocale());
     }
 
     public OptionalInt parseIntOrPrint(String text) {

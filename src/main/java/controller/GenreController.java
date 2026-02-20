@@ -1,22 +1,20 @@
 package controller;
 
-import command.Command;
+import command.genre.GenreCommand;
 import i18n.Messages;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Scanner;
 
+@Component
+@RequiredArgsConstructor
 public class GenreController {
     private final Scanner scanner;
     private final Messages messages;
-    private final Map<Integer, Command> genreCommands;
-
-    public GenreController(Scanner scanner, Messages messages, Map<Integer, Command> genreCommands) {
-        this.scanner = scanner;
-        this.messages = messages;
-        this.genreCommands = genreCommands;
-    }
+    private final Map<Integer, GenreCommand> genreCommands;
 
     public void showMenu() {
         while (true) {
@@ -32,7 +30,7 @@ public class GenreController {
                 continue;
             }
 
-            Command cmd = genreCommands.get(choice.getAsInt());
+            GenreCommand cmd = genreCommands.get(choice.getAsInt());
             if (cmd == null) {
                 System.out.println(messages.get("genre.menu.command.invalid"));
                 continue;

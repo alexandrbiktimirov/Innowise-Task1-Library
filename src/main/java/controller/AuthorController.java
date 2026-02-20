@@ -1,22 +1,20 @@
 package controller;
 
-import command.Command;
+import command.author.AuthorCommand;
 import i18n.Messages;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Scanner;
 
+@Component
+@RequiredArgsConstructor
 public class AuthorController {
     private final Scanner scanner;
     private final Messages messages;
-    private final Map<Integer, Command> authorCommands;
-
-    public AuthorController(Scanner scanner, Messages messages, Map<Integer, Command> authorCommands) {
-        this.scanner = scanner;
-        this.messages = messages;
-        this.authorCommands = authorCommands;
-    }
+    private final Map<Integer, AuthorCommand> authorCommands;
 
     public void showMenu() {
         while (true) {
@@ -32,7 +30,7 @@ public class AuthorController {
                 continue;
             }
 
-            Command cmd = authorCommands.get(choice.getAsInt());
+            AuthorCommand cmd = authorCommands.get(choice.getAsInt());
             if (cmd == null) {
                 System.out.println(messages.get("author.menu.command.invalid"));
                 continue;

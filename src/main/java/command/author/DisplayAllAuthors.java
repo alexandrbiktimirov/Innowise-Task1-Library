@@ -1,27 +1,25 @@
 package command.author;
 
-import command.Command;
 import i18n.Messages;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import service.AuthorService;
 
 @Component
-public class DisplayAllAuthors implements Command {
+@RequiredArgsConstructor
+public class DisplayAllAuthors implements AuthorCommand {
 
     private final AuthorService authorService;
     private final Messages messages;
 
-    public DisplayAllAuthors(AuthorService authorService, Messages messages) {
-        this.authorService = authorService;
-        this.messages = messages;
-    }
-
     @Override
     public void execute() {
-        if (authorService.getAllAuthors().isEmpty()) {
+        var authors = authorService.getAllAuthors();
+
+        if (authors.isEmpty()) {
             System.out.println(messages.get("author.empty"));
-        } else{
-            authorService.getAllAuthors().forEach(System.out::println);
+        } else {
+            authors.forEach(System.out::println);
         }
     }
 }
