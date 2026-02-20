@@ -1,7 +1,10 @@
 package i18n;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Locale;
 
+@Component
 public class LocaleHolder {
     private Locale locale = Locale.ENGLISH;
 

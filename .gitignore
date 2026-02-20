@@ -1,5 +1,6 @@
 # Custom
 csv/books.csv
+src/main/resources/database.properties
 
 .gradle
 build/

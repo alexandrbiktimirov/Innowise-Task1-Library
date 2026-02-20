@@ -1,0 +1,7 @@
+package exception;
+
+public class AuthorDoesNotExistException extends RuntimeException {
+    public AuthorDoesNotExistException(String message) {
+        super(message);
+    }
+}
