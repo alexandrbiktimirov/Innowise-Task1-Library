@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,16 +31,11 @@ public class AuthorDao {
         return session().createQuery("from Author", Author.class).list();
     }
 
-    public long countAuthors(Set<Long> ids) {
-        if (ids == null || ids.isEmpty()) return 0;
-
-        var cb = session().getCriteriaBuilder();
-        var cq = cb.createQuery(Long.class);
-        var root = cq.from(Author.class);
-
-        cq.select(cb.countDistinct(root.get("id"))).where(root.get("id").in(ids));
-
-        return session().createQuery(cq).getSingleResult();
+    public Set<Author> findByIds(Set<Long> ids) {
+        return new HashSet<>(session()
+                .createQuery("from Author where id in (:ids)", Author.class)
+                .setParameter("ids", ids)
+                .getResultList());
     }
 
     public void create(Author author) {

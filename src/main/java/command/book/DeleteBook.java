@@ -1,5 +1,6 @@
 package command.book;
 
+import command.Command;
 import exception.BookDoesNotExistException;
 import exception.InvalidIdFormatException;
 import i18n.Messages;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 
 @Component
 @RequiredArgsConstructor
-public class DeleteBook implements BookCommand {
+public class DeleteBook implements Command {
     private final Scanner scanner;
     private final BookService bookService;
     private final Messages messages;

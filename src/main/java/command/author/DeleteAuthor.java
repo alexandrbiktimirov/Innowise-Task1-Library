@@ -1,5 +1,6 @@
 package command.author;
 
+import command.Command;
 import exception.AuthorDoesNotExistException;
 import i18n.Messages;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.Scanner;
 
 @Component
 @RequiredArgsConstructor
-public class DeleteAuthor implements AuthorCommand {
+public class DeleteAuthor implements Command {
     private final AuthorService authorService;
     private final Messages messages;
     private final Scanner scanner;

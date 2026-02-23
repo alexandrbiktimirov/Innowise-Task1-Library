@@ -45,11 +45,6 @@ public class AuthorService {
         return Optional.of(libraryMapper.toAuthorDto(author));
     }
 
-    @Transactional(readOnly = true)
-    public long countAuthors(Set<Long> ids) {
-        return authorDao.countAuthors(ids);
-    }
-
     @Transactional
     public void createAuthor(String firstName, String lastName) {
         Author author = new Author(firstName, lastName);

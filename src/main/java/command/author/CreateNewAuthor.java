@@ -1,5 +1,6 @@
 package command.author;
 
+import command.Command;
 import i18n.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,7 @@ import java.util.Scanner;
 
 @Component
 @RequiredArgsConstructor
-public class CreateNewAuthor implements AuthorCommand {
+public class CreateNewAuthor implements Command {
     private final AuthorService authorService;
     private final Messages messages;
     private final Scanner scanner;

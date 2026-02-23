@@ -1,5 +1,6 @@
 package command.genre;
 
+import command.Command;
 import exception.GenreDoesNotExistException;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,7 @@ import java.util.OptionalLong;
 import java.util.Scanner;
 
 @Component
-public class DeleteGenre implements GenreCommand{
+public class DeleteGenre implements Command {
     private final Scanner scanner;
     private final GenreService genreService;
     private final Messages messages;

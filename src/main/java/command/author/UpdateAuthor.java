@@ -1,5 +1,6 @@
 package command.author;
 
+import command.Command;
 import exception.AuthorDoesNotExistException;
 import exception.InvalidIdFormatException;
 import i18n.Messages;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 
 @Component
 @RequiredArgsConstructor
-public class UpdateAuthor implements AuthorCommand {
+public class UpdateAuthor implements Command {
 
     private final AuthorService authorService;
     private final Scanner scanner;

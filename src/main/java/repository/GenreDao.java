@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,16 +35,11 @@ public class GenreDao {
         return session().createQuery(cq).getResultList();
     }
 
-    public long countGenres(Set<Long> ids) {
-        if (ids == null || ids.isEmpty()) return 0;
-
-        var cb = session().getCriteriaBuilder();
-        var cq = cb.createQuery(Long.class);
-        var root = cq.from(Author.class);
-
-        cq.select(cb.countDistinct(root.get("id"))).where(root.get("id").in(ids));
-
-        return session().createQuery(cq).getSingleResult();
+    public Set<Genre> findByIds(Set<Long> ids) {
+        return new HashSet<>(session()
+                .createQuery("from Genre where id in (:ids)", Genre.class)
+                .setParameter("ids", ids)
+                .getResultList());
     }
 
     public void create(Genre Genre) {

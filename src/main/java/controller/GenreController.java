@@ -1,8 +1,8 @@
 package controller;
 
-import command.genre.GenreCommand;
+import command.Command;
 import i18n.Messages;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -10,11 +10,16 @@ import java.util.OptionalInt;
 import java.util.Scanner;
 
 @Component
-@RequiredArgsConstructor
 public class GenreController {
     private final Scanner scanner;
     private final Messages messages;
-    private final Map<Integer, GenreCommand> genreCommands;
+    private final Map<Integer, Command> genreCommands;
+
+    public GenreController(Scanner scanner, Messages messages, @Qualifier("genreCommands") Map<Integer, Command> genreCommands) {
+        this.scanner = scanner;
+        this.messages = messages;
+        this.genreCommands = genreCommands;
+    }
 
     public void showMenu() {
         while (true) {
@@ -30,7 +35,7 @@ public class GenreController {
                 continue;
             }
 
-            GenreCommand cmd = genreCommands.get(choice.getAsInt());
+            Command cmd = genreCommands.get(choice.getAsInt());
             if (cmd == null) {
                 System.out.println(messages.get("genre.menu.command.invalid"));
                 continue;

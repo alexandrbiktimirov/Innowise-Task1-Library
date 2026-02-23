@@ -41,11 +41,6 @@ public class GenreService {
         return Optional.of(libraryMapper.toGenreDto(genre));
     }
 
-    @Transactional(readOnly = true)
-    public long countGenres(Set<Long> ids) {
-        return genreDao.countGenres(ids);
-    }
-
     @Transactional
     public void createGenre(String name) {
         Genre genre = new Genre(name);

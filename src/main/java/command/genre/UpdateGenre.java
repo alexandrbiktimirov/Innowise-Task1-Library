@@ -1,6 +1,8 @@
 package command.genre;
 
-import exception.GenreDoesNotExistException;
+import command.Command;
+import exception.BookDoesNotExistException;
+import exception.InvalidIdFormatException;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.GenreService;
@@ -9,7 +11,7 @@ import java.util.OptionalLong;
 import java.util.Scanner;
 
 @Component
-public class UpdateGenre implements GenreCommand {
+public class UpdateGenre implements Command {
     private final Scanner scanner;
     private final Messages messages;
     private final GenreService genreService;
@@ -22,44 +24,50 @@ public class UpdateGenre implements GenreCommand {
 
     @Override
     public void execute() {
-        if (genreService.getAllGenres().isEmpty()) {
+        var genres = genreService.getAllGenres();
+
+        if (genres.isEmpty()) {
             System.out.println(messages.get("genre.empty"));
             return;
         }
 
         while (true) {
-            genreService.getAllGenres().forEach(System.out::println);
+            genres.forEach(System.out::println);
 
-            System.out.println(messages.get("genre.update.id"));
+            long id = getChoiceId();
+            if (id == -1) break;
 
-            OptionalLong id = messages.parseLongOrPrint(scanner.nextLine().trim());
-            if (id.isEmpty()) {
-                System.out.println(messages.get("genre.notfound"));
-                continue;
-            }
+            String name = getString("genre.update.name", "genre.name.empty");
+            if (name.isEmpty()) continue;
 
-            try {
-                genreService.getGenreById(id.getAsLong());
-            } catch (GenreDoesNotExistException e) {
-                System.out.println(messages.get("genre.notfound"));
-                continue;
-            }
-
-            System.out.println(messages.get("genre.update.name"));
-            String name = scanner.nextLine().trim();
-
-            if (name.isEmpty()) {
-                System.out.println(messages.get("genre.name.empty"));
-                continue;
-            }
-
-            try {
-                genreService.updateGenre(id.getAsLong(), name);
-            } catch (GenreDoesNotExistException e) {
-                System.out.println(messages.get("genre.notfound"));
-                continue;
-            }
+            genreService.updateGenre(id, name);
             break;
         }
+    }
+
+    private String getString(String request, String exceptionKey){
+        System.out.println(messages.get(request));
+
+        String str = scanner.nextLine().trim();
+
+        if (str.isEmpty()) {
+            System.out.println(messages.get(exceptionKey));
+        }
+
+        return str;
+    }
+
+    private long getChoiceId(){
+        System.out.println(messages.get("genre.update.id"));
+        OptionalLong id = messages.parseLongOrPrint(scanner.nextLine().trim());
+
+        try {
+            genreService.getGenreById(id);
+        } catch (InvalidIdFormatException | BookDoesNotExistException e) {
+            System.out.println(e.getMessage());
+            return -1;
+        }
+
+        return id.getAsLong();
     }
 }

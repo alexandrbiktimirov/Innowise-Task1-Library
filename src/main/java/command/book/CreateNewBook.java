@@ -1,5 +1,11 @@
 package command.book;
 
+import command.Command;
+import dto.AuthorDto;
+import dto.BookDto;
+import dto.GenreDto;
+import exception.AuthorDoesNotExistException;
+import exception.GenreDoesNotExistException;
 import i18n.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -7,13 +13,14 @@ import service.AuthorService;
 import service.BookService;
 import service.GenreService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class CreateNewBook implements BookCommand {
+public class CreateNewBook implements Command {
     private final Scanner scanner;
     private final Messages messages;
     private final BookService bookService;
@@ -22,6 +29,11 @@ public class CreateNewBook implements BookCommand {
 
     @Override
     public void execute() {
+        var authors = authorService.getAllAuthors();
+        var genres = genreService.getAllGenres();
+
+        if (!isDbValid(authors, genres)) return;
+
         while (true) {
             String title = getString("book.create.title", "book.create.title.invalid");
             if (title == null) continue;
@@ -30,25 +42,20 @@ public class CreateNewBook implements BookCommand {
             if (description == null) continue;
 
             System.out.println(messages.get("book.create.author"));
-            String authors = scanner.nextLine().trim();
-
-            Optional<Set<Long>> authorIds = messages.parseLongSetOrPrint(authors);
-
-            if (authorIds.isEmpty() || !authorsExist(authorIds.get())) {
-                System.out.println(messages.get("author.notfound"));
-                break;
-            }
+            String authorsInput = scanner.nextLine().trim();
+            Optional<Set<Long>> authorIds = messages.parseLongSetOrPrint(authorsInput);
+            if (authorIds.isEmpty()) continue;
 
             System.out.println(messages.get("book.create.genre"));
-            String genre = scanner.nextLine().trim();
-            Optional<Set<Long>> genreIds = messages.parseLongSetOrPrint(genre);
+            String genresInput = scanner.nextLine().trim();
+            Optional<Set<Long>> genreIds = messages.parseLongSetOrPrint(genresInput);
+            if (genreIds.isEmpty()) continue;
 
-            if (genreIds.isEmpty() || !genresExist(genreIds.get())) {
-                System.out.println(messages.get("genre.notfound"));
-                break;
+            try{
+                bookService.createBook(title, description, authorIds.get(), genreIds.get());
+            } catch(AuthorDoesNotExistException | GenreDoesNotExistException e){
+                System.out.println(e.getMessage());
             }
-
-            bookService.createBook(title, description, authorIds.get(), genreIds.get());
             break;
         }
     }
@@ -65,11 +72,15 @@ public class CreateNewBook implements BookCommand {
         return input;
     }
 
-    private boolean authorsExist(Set<Long> authorIds) {
-        return authorIds.size() == authorService.countAuthors(authorIds);
-    }
-
-    private boolean genresExist(Set<Long> genreIds) {
-        return genreIds.size() == genreService.countGenres(genreIds);
+    private boolean isDbValid(List<AuthorDto> authors, List<GenreDto> genres){
+        if (authors.isEmpty()){
+            System.out.println(messages.get("book.update.noAuthors"));
+            return false;
+        } else if (genres.isEmpty()){
+            System.out.println(messages.get("book.update.noGenres"));
+            return false;
+        } else{
+            return true;
+        }
     }
 }

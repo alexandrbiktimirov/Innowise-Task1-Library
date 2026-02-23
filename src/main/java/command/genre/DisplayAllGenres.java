@@ -1,11 +1,12 @@
 package command.genre;
 
+import command.Command;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.GenreService;
 
 @Component
-public class DisplayAllGenres implements GenreCommand {
+public class DisplayAllGenres implements Command {
     private final GenreService genreService;
     private final Messages messages;
 
@@ -16,10 +17,12 @@ public class DisplayAllGenres implements GenreCommand {
 
     @Override
     public void execute() {
-        if (genreService.getAllGenres().isEmpty()) {
-            System.out.println(messages.get("genre.empty"));
-        }
+        var genres = genreService.getAllGenres();
 
-        genreService.getAllGenres().forEach(System.out::println);
+        if (genres.isEmpty()) {
+            System.out.println(messages.get("genre.empty"));
+        } else{
+            genres.forEach(System.out::println);
+        }
     }
 }

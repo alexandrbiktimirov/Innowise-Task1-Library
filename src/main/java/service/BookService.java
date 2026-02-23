@@ -1,10 +1,7 @@
 package service;
 
 import dto.BookDto;
-import exception.AuthorDoesNotExistException;
-import exception.BookDoesNotExistException;
-import exception.GenreDoesNotExistException;
-import exception.InvalidIdFormatException;
+import exception.*;
 import i18n.Messages;
 import lombok.RequiredArgsConstructor;
 import mapper.LibraryMapper;
@@ -17,10 +14,7 @@ import repository.AuthorDao;
 import repository.BookDao;
 import repository.GenreDao;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalLong;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,26 +79,26 @@ public class BookService {
     }
 
     private Set<Author> resolveAuthors(Set<Long> authorIds) {
-        return authorIds.stream()
-                .map(authorId -> {
-                    Author author = authorDao.findById(authorId);
-                    if (author == null) {
-                        throw new AuthorDoesNotExistException(messages.get("author.notfound", authorId));
-                    }
-                    return author;
-                })
-                .collect(Collectors.toSet());
+        Set<Author> found = authorDao.findByIds(authorIds);
+
+        if (found.size() != authorIds.size()) {
+            Set<Long> foundIds = found.stream().map(Author::getId).collect(Collectors.toSet());
+            Long missing = authorIds.stream().filter(id -> !foundIds.contains(id)).findFirst().orElse(null);
+            throw new AuthorDoesNotExistException(messages.get("author.notfound", missing));
+        }
+
+        return new HashSet<>(found);
     }
 
     private Set<Genre> resolveGenres(Set<Long> genreIds) {
-        return genreIds.stream()
-                .map(genreId -> {
-                    Genre genre = genreDao.findById(genreId);
-                    if (genre == null) {
-                        throw new GenreDoesNotExistException(messages.get("genre.notfound", genreId));
-                    }
-                    return genre;
-                })
-                .collect(Collectors.toSet());
+        Set<Genre> found = genreDao.findByIds(genreIds);
+
+        if (found.size() != genreIds.size()) {
+            Set<Long> foundIds = found.stream().map(Genre::getId).collect(Collectors.toSet());
+            Long missing = genreIds.stream().filter(id -> !foundIds.contains(id)).findFirst().orElse(null);
+            throw new GenreDoesNotExistException(messages.get("genre.notfound", missing));
+        }
+
+        return new HashSet<>(found);
     }
 }

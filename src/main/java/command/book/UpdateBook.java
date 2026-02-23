@@ -1,6 +1,10 @@
 package command.book;
 
-import exception.BookDoesNotExistException;
+import command.Command;
+import dto.AuthorDto;
+import dto.BookDto;
+import dto.GenreDto;
+import exception.*;
 import i18n.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -8,14 +12,11 @@ import service.AuthorService;
 import service.BookService;
 import service.GenreService;
 
-import java.util.Optional;
-import java.util.OptionalLong;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
-public class UpdateBook implements BookCommand {
+public class UpdateBook implements Command {
     private final Scanner scanner;
     private final Messages messages;
     private final BookService bookService;
@@ -28,69 +29,89 @@ public class UpdateBook implements BookCommand {
         var authors = authorService.getAllAuthors();
         var genres = genreService.getAllGenres();
 
+        if (!isDbValid(books, authors, genres)) return;
+
         while (true) {
             books.forEach(System.out::println);
 
-            System.out.println(messages.get("book.update.id"));
+            long id = getChoiceId();
+            if (id == -1) break;
 
-            String inputId = scanner.nextLine().trim();
-            OptionalLong id = messages.parseLongOrPrint(inputId);
-            if (id.isEmpty()) {
-                System.out.println(messages.get("book.notfound"));
-                continue;
+            String title = getString("book.update.title", "book.update.title.invalid");
+            if (title.isEmpty()) continue;
+
+            String description = getString("book.update.description",  "book.update.description.invalid");
+            if (description.isEmpty()) continue;
+
+            Optional<Set<Long>> authorIds = assignAuthors(authors);
+            if (authorIds.isEmpty()) continue;
+
+            Optional<Set<Long>> genreIds = assignGenres(genres);
+            if (genreIds.isEmpty()) continue;
+
+            try{
+                bookService.updateBook(id, title, description, authorIds.get(), genreIds.get());
+            } catch(AuthorDoesNotExistException | GenreDoesNotExistException e) {
+                System.out.println(e.getMessage());
             }
-
-            try {
-                bookService.getBookById(id.getAsLong());
-            } catch (BookDoesNotExistException e) {
-                System.out.println(messages.get("book.notfound"));
-                continue;
-            }
-
-            System.out.println(messages.get("book.update.title"));
-            String title = scanner.nextLine().trim();
-
-            if (title.isEmpty()) {
-                System.out.println(messages.get("book.update.title.invalid"));
-                continue;
-            }
-
-            System.out.println(messages.get("book.update.description"));
-            String description = scanner.nextLine().trim();
-
-            if (description.isEmpty()) {
-                System.out.println(messages.get("book.update.description.invalid"));
-                continue;
-            }
-
-            System.out.println(messages.get("book.update.author"));
-            String author = scanner.nextLine().trim();
-            Optional<Set<Long>> authorIds = messages.parseLongSetOrPrint(author);
-
-            if (authorIds.isEmpty() || !authorsExist(authorIds.get())) {
-                System.out.println(messages.get("author.notfound"));
-                continue;
-            }
-
-            System.out.println(messages.get("book.update.genre"));
-            String genre = scanner.nextLine().trim();
-            Optional<Set<Long>> genreIds = messages.parseLongSetOrPrint(genre);
-
-            if (genreIds.isEmpty() || !genresExist(genreIds.get())) {
-                System.out.println(messages.get("genre.notfound"));
-                continue;
-            }
-
-            bookService.updateBook(id.getAsLong(), title, description, authorIds.get(), genreIds.get());
             break;
         }
     }
 
-    private boolean authorsExist(Set<Long> authorIds) {
-        return authorIds.size() == authorService.countAuthors(authorIds);
+    private Optional<Set<Long>> assignAuthors(List<AuthorDto> authors){
+        authors.forEach(System.out::println);
+        System.out.println(messages.get("book.update.author"));
+        String author = scanner.nextLine().trim();
+
+        return messages.parseLongSetOrPrint(author);
     }
 
-    private boolean genresExist(Set<Long> genreIds) {
-        return genreIds.size() == genreService.countGenres(genreIds);
+    private Optional<Set<Long>> assignGenres(List<GenreDto> genres){
+        genres.forEach(System.out::println);
+        System.out.println(messages.get("book.update.genre"));
+        String genre = scanner.nextLine().trim();
+
+        return messages.parseLongSetOrPrint(genre);
+    }
+
+    private String getString(String request, String exceptionKey){
+        System.out.println(messages.get(request));
+
+        String name = scanner.nextLine().trim();
+
+        if (name.isEmpty()) {
+            System.out.println(messages.get(exceptionKey));
+        }
+
+        return name;
+    }
+
+    private long getChoiceId(){
+        System.out.println(messages.get("book.update.id"));
+        OptionalLong id = messages.parseLongOrPrint(scanner.nextLine().trim());
+
+        try {
+            bookService.getBookById(id);
+        } catch (InvalidIdFormatException | BookDoesNotExistException e) {
+            System.out.println(e.getMessage());
+            return -1;
+        }
+
+        return id.getAsLong();
+    }
+
+    private boolean isDbValid(List<BookDto> books, List<AuthorDto> authors, List<GenreDto> genres){
+        if (books.isEmpty()){
+            System.out.println(messages.get("book.update.noBooks"));
+            return false;
+        } else if (authors.isEmpty()){
+            System.out.println(messages.get("book.update.noAuthors"));
+            return false;
+        } else if (genres.isEmpty()){
+            System.out.println(messages.get("book.update.noGenres"));
+            return false;
+        } else{
+            return true;
+        }
     }
 }
