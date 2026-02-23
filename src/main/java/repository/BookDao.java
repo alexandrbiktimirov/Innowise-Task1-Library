@@ -21,7 +21,15 @@ public class BookDao {
     }
 
     public List<Book> findAll() {
-        return session().createQuery("from Book", Book.class).list();
+        var cq = session().getCriteriaBuilder().createQuery(Book.class);
+        var root = cq.from(Book.class);
+
+        root.fetch("authors");
+        root.fetch("genres");
+
+        cq.select(root).distinct(true);
+
+        return session().createQuery(cq).getResultList();
     }
 
     public void create(Book Book) {
