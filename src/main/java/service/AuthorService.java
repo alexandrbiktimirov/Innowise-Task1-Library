@@ -14,7 +14,6 @@ import repository.AuthorDao;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class AuthorService {
 
     @Transactional(readOnly = true)
     public Optional<AuthorDto> getAuthorById(OptionalLong optionalId) {
-        if (optionalId.isEmpty()){
+        if (optionalId.isEmpty()) {
             throw new InvalidIdFormatException(messages.get("common.invalid.format"));
         }
 

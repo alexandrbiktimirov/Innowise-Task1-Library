@@ -2,7 +2,6 @@ package command.book;
 
 import command.Command;
 import dto.AuthorDto;
-import dto.BookDto;
 import dto.GenreDto;
 import exception.AuthorDoesNotExistException;
 import exception.GenreDoesNotExistException;
