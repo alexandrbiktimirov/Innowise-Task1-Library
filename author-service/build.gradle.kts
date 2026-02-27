@@ -28,6 +28,12 @@ dependencies {
     testImplementation(libs.spring.testcontainers)
     testRuntimeOnly(libs.junit.platform.launcher)
 
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+
+    testCompileOnly(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
+
     annotationProcessor(libs.spring.boot.configuration.processor)
     annotationProcessor(libs.mapstruct.processor)
 }

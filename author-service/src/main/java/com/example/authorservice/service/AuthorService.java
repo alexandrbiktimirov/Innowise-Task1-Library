@@ -5,20 +5,17 @@ import com.example.authorservice.dto.AuthorDto;
 import com.example.authorservice.dto.AuthorUpdateDto;
 import com.example.authorservice.exception.AuthorDoesNotExistException;
 import com.example.authorservice.mapper.AuthorMapper;
-import com.example.authorservice.model.Author;
+import com.example.authorservice.repository.AuthorRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.library.repository.AuthorRepository;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AuthorService {
     private final AuthorRepository authorRepository;
-
-    public AuthorService(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
-    }
 
     public List<AuthorDto> getAllAuthors() {
         return authorRepository.findAll()
@@ -35,21 +32,17 @@ public class AuthorService {
 
     @Transactional
     public void createAuthor(AuthorCreateDto authorCreateDto) {
-        Author author = AuthorMapper.INSTANCE.toEntity(authorCreateDto);
+        var author = AuthorMapper.INSTANCE.toEntity(authorCreateDto);
 
         authorRepository.save(author);
     }
 
     @Transactional
     public void updateAuthor(long id, AuthorUpdateDto authorUpdateDto) {
-        Author author = authorRepository.findById(id).orElseThrow(() -> new AuthorDoesNotExistException("Author with id " + id + " does not exist"));
+        var author = authorRepository.findById(id).orElseThrow(() -> new AuthorDoesNotExistException("Author with id " + id + " does not exist"));
 
-        if (authorUpdateDto.firstName() != null) {
-            author.setFirstName(authorUpdateDto.firstName());
-        }
-        if (authorUpdateDto.lastName() != null) {
-            author.setLastName(authorUpdateDto.lastName());
-        }
+        if (authorUpdateDto.firstName() != null) author.setFirstName(authorUpdateDto.firstName());
+        if (authorUpdateDto.lastName() != null) author.setLastName(authorUpdateDto.lastName());
 
         authorRepository.save(author);
     }

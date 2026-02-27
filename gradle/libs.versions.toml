@@ -7,6 +7,7 @@ jakarta-annotation = "3.0.0"
 jjwt = "0.13.0"
 testcontainers = "1.21.3"
 junit = "5.10.2"
+lombok = "1.18.36"
 
 [libraries]
 spring-data = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
@@ -42,6 +43,8 @@ junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+
 [bundles]
 spring-boot-starter-implementation = [
     "spring-data",
@@ -49,7 +52,6 @@ spring-boot-starter-implementation = [
     "spring-aop",
     "spring-validation",
     "spring-mongodb",
-    "spring-security"
 ]
 
 testcontainers-all = [

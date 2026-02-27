@@ -3,19 +3,17 @@ package com.example.authorservice.controller;
 import com.example.authorservice.dto.AuthorCreateDto;
 import com.example.authorservice.dto.AuthorDto;
 import com.example.authorservice.dto.AuthorUpdateDto;
-import org.springframework.web.bind.annotation.*;
 import com.example.authorservice.service.AuthorService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/authors")
+@RequiredArgsConstructor
 public class AuthorController {
     private final AuthorService authorService;
-
-    public AuthorController(AuthorService authorService) {
-        this.authorService = authorService;
-    }
 
     @GetMapping
     public List<AuthorDto> getAuthors() {
