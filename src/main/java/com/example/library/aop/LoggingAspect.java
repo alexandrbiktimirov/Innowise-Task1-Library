@@ -38,7 +38,7 @@ public class LoggingAspect {
             logger.info("Exiting {} with result=[{}]", callFact, resultStr);
 
             return result;
-        } catch( Throwable e ) {
+        } catch (Throwable e) {
             logger.error("Throwing {} with com.example.library.exception={} message={}", callFact, e.getClass().getSimpleName(), e.getMessage());
             throw e;
         }
