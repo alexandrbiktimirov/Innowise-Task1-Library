@@ -31,7 +31,7 @@ public class GenreService {
     public GenreDto getGenreById(OptionalLong genreId) {
         if (genreId.isEmpty()) throw new InvalidIdFormatException(messages.get("common.invalid.format"));
 
-        var id = genreId.getAsLong();
+        long id = genreId.getAsLong();
         Genre genre = genreDao.findById(id);
 
         if (genre == null) throw new GenreDoesNotExistException(messages.get("genre.notfound", id));
@@ -49,9 +49,8 @@ public class GenreService {
     @Transactional
     public void updateGenre(long id, String name) {
         Genre genre = genreDao.findById(id);
-        if (genre == null) {
-            throw new GenreDoesNotExistException(messages.get("genre.notfound", id));
-        }
+
+        if (genre == null) throw new GenreDoesNotExistException(messages.get("genre.notfound", id));
 
         genre.setName(name);
 
@@ -60,9 +59,8 @@ public class GenreService {
 
     @Transactional
     public void deleteGenre(Long id) {
-        if (genreDao.findById(id) == null) {
-            throw new GenreDoesNotExistException(messages.get("genre.notfound", id));
-        }
+        if (genreDao.findById(id) == null) throw new GenreDoesNotExistException(messages.get("genre.notfound", id));
+
         genreDao.delete(id);
     }
 }

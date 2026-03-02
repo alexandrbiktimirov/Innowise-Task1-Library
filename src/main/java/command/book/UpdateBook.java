@@ -4,7 +4,10 @@ import command.Command;
 import dto.AuthorDto;
 import dto.BookDto;
 import dto.GenreDto;
-import exception.*;
+import exception.AuthorDoesNotExistException;
+import exception.BookDoesNotExistException;
+import exception.GenreDoesNotExistException;
+import exception.InvalidIdFormatException;
 import i18n.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,9 +28,9 @@ public class UpdateBook implements Command {
 
     @Override
     public void execute() {
-        var books = bookService.getAllBooks();
-        var authors = authorService.getAllAuthors();
-        var genres = genreService.getAllGenres();
+        List<BookDto> books = bookService.getAllBooks();
+        List<AuthorDto> authors = authorService.getAllAuthors();
+        List<GenreDto> genres = genreService.getAllGenres();
 
         if (!isDbValid(books, authors, genres)) return;
 

@@ -42,7 +42,7 @@ public class BookService {
     public BookDto getBookById(OptionalLong bookId) {
         if (bookId.isEmpty()) throw new InvalidIdFormatException(messages.get("common.invalid.format"));
 
-        var id = bookId.getAsLong();
+        long id = bookId.getAsLong();
         Book book = bookDao.findById(id);
 
         if (book == null) throw new BookDoesNotExistException(messages.get("book.notfound", id));
@@ -63,9 +63,7 @@ public class BookService {
     @Transactional
     public void updateBook(long id, String title, String description, Set<Long> authorIds, Set<Long> genreIds) {
         Book book = bookDao.findById(id);
-        if (book == null) {
-            throw new BookDoesNotExistException(messages.get("book.notfound", id));
-        }
+        if (book == null) throw new BookDoesNotExistException(messages.get("book.notfound", id));
 
         book.setTitle(title);
         book.setDescription(description);
@@ -77,9 +75,7 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Long id) {
-        if (bookDao.findById(id) == null) {
-            throw new BookDoesNotExistException(messages.get("book.notfound", id));
-        }
+        if (bookDao.findById(id) == null) throw new BookDoesNotExistException(messages.get("book.notfound", id));
 
         bookDao.delete(id);
     }

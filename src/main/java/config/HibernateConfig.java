@@ -29,7 +29,7 @@ public class HibernateConfig {
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
-        var sessionFactory = new LocalSessionFactoryBean();
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setPackagesToScan("model");
@@ -40,7 +40,7 @@ public class HibernateConfig {
 
     @Bean
     public DataSource dataSource() {
-        var dataSource = new DriverManagerDataSource();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setUrl(env.getProperty("database.url"));
         dataSource.setUsername(env.getProperty("database.username"));
@@ -66,7 +66,7 @@ public class HibernateConfig {
 
     @Bean
     public HibernateTransactionManager transactionManager() {
-        var transactionManager = new HibernateTransactionManager();
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory().getObject());
 
         return transactionManager;

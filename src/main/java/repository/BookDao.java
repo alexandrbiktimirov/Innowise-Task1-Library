@@ -3,6 +3,8 @@ package repository;
 import model.Book;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.criteria.JpaCriteriaQuery;
+import org.hibernate.query.criteria.JpaRoot;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,8 +23,8 @@ public class BookDao {
     }
 
     public List<Book> findAll() {
-        var cq = session().getCriteriaBuilder().createQuery(Book.class);
-        var root = cq.from(Book.class);
+        JpaCriteriaQuery<Book> cq = session().getCriteriaBuilder().createQuery(Book.class);
+        JpaRoot<Book> root = cq.from(Book.class);
 
         root.fetch("authors");
         root.fetch("genres");

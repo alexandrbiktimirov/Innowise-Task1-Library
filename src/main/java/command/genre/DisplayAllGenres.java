@@ -1,9 +1,12 @@
 package command.genre;
 
 import command.Command;
+import dto.GenreDto;
 import i18n.Messages;
 import org.springframework.stereotype.Component;
 import service.GenreService;
+
+import java.util.List;
 
 @Component
 public class DisplayAllGenres implements Command {
@@ -17,7 +20,7 @@ public class DisplayAllGenres implements Command {
 
     @Override
     public void execute() {
-        var genres = genreService.getAllGenres();
+        List<GenreDto> genres = genreService.getAllGenres();
 
         if (genres.isEmpty()) {
             System.out.println(messages.get("genre.empty"));

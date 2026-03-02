@@ -1,6 +1,7 @@
 package command.author;
 
 import command.Command;
+import dto.AuthorDto;
 import exception.AuthorDoesNotExistException;
 import exception.InvalidIdFormatException;
 import i18n.Messages;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import service.AuthorService;
 
+import java.util.List;
 import java.util.OptionalLong;
 import java.util.Scanner;
 
@@ -21,7 +23,7 @@ public class UpdateAuthor implements Command {
 
     @Override
     public void execute() {
-        var authorsList = authorService.getAllAuthors();
+        List<AuthorDto> authorsList = authorService.getAllAuthors();
 
         if (authorsList.isEmpty()) {
             System.out.println(messages.get("author.empty"));
@@ -31,7 +33,7 @@ public class UpdateAuthor implements Command {
         while (true) {
             authorsList.forEach(System.out::println);
 
-            var id = getChoiceId();
+            long id = getChoiceId();
             if (id == -1) break;
 
             String firstName = getName("author.update.firstName", "author.firstName.empty");

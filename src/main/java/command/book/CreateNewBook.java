@@ -28,8 +28,8 @@ public class CreateNewBook implements Command {
 
     @Override
     public void execute() {
-        var authors = authorService.getAllAuthors();
-        var genres = genreService.getAllGenres();
+        List<AuthorDto> authors = authorService.getAllAuthors();
+        List<GenreDto> genres = genreService.getAllGenres();
 
         if (!isDbValid(authors, genres)) return;
 

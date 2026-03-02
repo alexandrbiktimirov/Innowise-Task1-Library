@@ -28,16 +28,13 @@ public class AuthorService {
 
     @Transactional(readOnly = true)
     public AuthorDto getAuthorById(OptionalLong optionalId) {
-        if (optionalId.isEmpty()) {
-            throw new InvalidIdFormatException(messages.get("common.invalid.format"));
-        }
+        if (optionalId.isEmpty()) throw new InvalidIdFormatException(messages.get("common.invalid.format"));
 
-        var id = optionalId.getAsLong();
+        long id = optionalId.getAsLong();
 
         Author author = authorDao.findById(id);
 
         if (author == null) throw new AuthorDoesNotExistException(messages.get("author.notfound", id));
-
 
         return libraryMapper.toAuthorDto(author);
     }
@@ -51,9 +48,7 @@ public class AuthorService {
     @Transactional
     public void updateAuthor(long id, String firstName, String lastName) {
         Author author = authorDao.findById(id);
-        if (author == null) {
-            throw new AuthorDoesNotExistException(messages.get("author.notfound", id));
-        }
+        if (author == null) throw new AuthorDoesNotExistException(messages.get("author.notfound", id));
 
         author.setFirstName(firstName);
         author.setLastName(lastName);
@@ -63,9 +58,8 @@ public class AuthorService {
 
     @Transactional
     public void deleteAuthor(long id) {
-        if (authorDao.findById(id) == null) {
-            throw new AuthorDoesNotExistException(messages.get("author.notfound", id));
-        }
+        if (authorDao.findById(id) == null) throw new AuthorDoesNotExistException(messages.get("author.notfound", id));
+
         authorDao.delete(id);
     }
 }

@@ -1,10 +1,13 @@
 package command.author;
 
 import command.Command;
+import dto.AuthorDto;
 import i18n.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import service.AuthorService;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -15,7 +18,7 @@ public class DisplayAllAuthors implements Command {
 
     @Override
     public void execute() {
-        var authors = authorService.getAllAuthors();
+        List<AuthorDto> authors = authorService.getAllAuthors();
 
         if (authors.isEmpty()) {
             System.out.println(messages.get("author.empty"));
