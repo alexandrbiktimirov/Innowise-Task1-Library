@@ -59,7 +59,7 @@ public class GenreService {
 
     @Transactional
     public void deleteGenre(long id) {
-        var genre = genreRepository.findById(id)
+        Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new GenreDoesNotExistException("Genre with id " + id + " does not exist"));
         genreRepository.delete(genre);
     }

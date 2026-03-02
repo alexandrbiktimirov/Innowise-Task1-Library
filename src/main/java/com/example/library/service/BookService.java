@@ -71,7 +71,7 @@ public class BookService {
 
     @Transactional
     public void deleteBook(long id) {
-        var book = bookRepository.findById(id)
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookDoesNotExistException("Book with id " + id + " does not exist"));
         bookRepository.delete(book);
     }
