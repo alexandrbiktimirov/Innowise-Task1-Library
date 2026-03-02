@@ -8,11 +8,12 @@ import com.example.library.exception.BookDoesNotExistException;
 import com.example.library.mapper.LibraryMapper;
 import com.example.library.model.Author;
 import com.example.library.model.Book;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.example.library.repository.AuthorRepository;
 import com.example.library.repository.BookRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,10 +27,12 @@ public class AuthorService  {
     private final BookRepository bookRepository;
     private final LibraryMapper libraryMapper;
 
+    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public List<AuthorDto> getAllAuthors() {
         return libraryMapper.toAuthorDtos(authorRepository.findAll());
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public AuthorDto getAuthorById(long id) {
         return authorRepository.findById(id)
                 .map(libraryMapper::toAuthorDto)

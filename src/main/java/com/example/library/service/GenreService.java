@@ -8,11 +8,12 @@ import com.example.library.exception.GenreDoesNotExistException;
 import com.example.library.mapper.LibraryMapper;
 import com.example.library.model.Book;
 import com.example.library.model.Genre;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.GenreRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,10 +27,12 @@ public class GenreService {
     private final BookRepository bookRepository;
     private final LibraryMapper libraryMapper;
 
+    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public List<GenreDto> getAllGenres() {
         return libraryMapper.toGenreDtos(genreRepository.findAll());
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public GenreDto getGenreById(long id) {
         return genreRepository.findById(id)
                 .map(libraryMapper::toGenreDto)
