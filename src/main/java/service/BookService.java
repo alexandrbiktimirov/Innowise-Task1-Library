@@ -1,7 +1,10 @@
 package service;
 
 import dto.BookDto;
-import exception.*;
+import exception.AuthorDoesNotExistException;
+import exception.BookDoesNotExistException;
+import exception.GenreDoesNotExistException;
+import exception.InvalidIdFormatException;
 import i18n.Messages;
 import lombok.RequiredArgsConstructor;
 import mapper.LibraryMapper;
@@ -14,7 +17,10 @@ import repository.AuthorDao;
 import repository.BookDao;
 import repository.GenreDao;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.OptionalLong;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +39,7 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<BookDto> getBookById(OptionalLong bookId) {
+    public BookDto getBookById(OptionalLong bookId) {
         if (bookId.isEmpty()) throw new InvalidIdFormatException(messages.get("common.invalid.format"));
 
         var id = bookId.getAsLong();
@@ -41,7 +47,7 @@ public class BookService {
 
         if (book == null) throw new BookDoesNotExistException(messages.get("book.notfound", id));
 
-        return Optional.of(libraryMapper.toBookDto(book));
+        return libraryMapper.toBookDto(book);
     }
 
     @Transactional

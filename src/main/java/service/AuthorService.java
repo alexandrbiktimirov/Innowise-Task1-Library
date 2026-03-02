@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import repository.AuthorDao;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalLong;
 
 @Service
@@ -28,7 +27,7 @@ public class AuthorService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<AuthorDto> getAuthorById(OptionalLong optionalId) {
+    public AuthorDto getAuthorById(OptionalLong optionalId) {
         if (optionalId.isEmpty()) {
             throw new InvalidIdFormatException(messages.get("common.invalid.format"));
         }
@@ -37,11 +36,10 @@ public class AuthorService {
 
         Author author = authorDao.findById(id);
 
-        if (author == null) {
-            throw new AuthorDoesNotExistException(messages.get("author.notfound", id));
-        }
+        if (author == null) throw new AuthorDoesNotExistException(messages.get("author.notfound", id));
 
-        return Optional.of(libraryMapper.toAuthorDto(author));
+
+        return libraryMapper.toAuthorDto(author);
     }
 
     @Transactional

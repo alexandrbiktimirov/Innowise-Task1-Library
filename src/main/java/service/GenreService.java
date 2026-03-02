@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import repository.GenreDao;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalLong;
 
 @Service
@@ -29,7 +28,7 @@ public class GenreService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<GenreDto> getGenreById(OptionalLong genreId) {
+    public GenreDto getGenreById(OptionalLong genreId) {
         if (genreId.isEmpty()) throw new InvalidIdFormatException(messages.get("common.invalid.format"));
 
         var id = genreId.getAsLong();
@@ -37,7 +36,7 @@ public class GenreService {
 
         if (genre == null) throw new GenreDoesNotExistException(messages.get("genre.notfound", id));
 
-        return Optional.of(libraryMapper.toGenreDto(genre));
+        return libraryMapper.toGenreDto(genre);
     }
 
     @Transactional
